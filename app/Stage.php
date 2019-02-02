@@ -67,4 +67,9 @@ class Stage extends Model
     {
         $query->where('id', 10);
     }
+
+    public function scopeRequestRejected($query)
+    {
+        $query->where('id', 11);
+    }
 }

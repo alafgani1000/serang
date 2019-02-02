@@ -43,11 +43,21 @@ class IncidentCreated extends Notification
      */
     public function toMail($notifiable)
     {
+        if($this->incident->stage_id == 3)
+        {
+            $url = route('incidents.ticketshow',$this->incident->id);
+        }else if($this->incident->stage_id == 4)
+        {
+            $url = route('incidents.detailshow',$this->incident->id);
+        }
         return (new MailMessage)
-                    ->greeting('Hello')
-                    ->line($this->incident->user_id)
-                    ->line($this->incident->description)
-                    ->action('Notification Action', url('/'))
+                    ->greeting('Dengan Hormat')
+                    ->line($this->incident->user_id .":".$this->incident->user->name)
+                    ->line("incident: " . $this->incident->description)
+                    ->line("impact: " . $this->incident->impact)
+                    ->line($this->incident->stage->name)
+                    ->action('Notification Action', route('incidents.index'))
+                    ->action('Notification Action Link', $url)
                     ->line('Thank you');
     }
 
@@ -61,6 +71,7 @@ class IncidentCreated extends Notification
     {
         return [
             'stage_id' => $this->incident->stage_id,
+            'id' => $this->incident->id,
             'description' => str_limit($this->incident->description,50),
         ];
     }

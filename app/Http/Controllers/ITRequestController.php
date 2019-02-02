@@ -135,6 +135,7 @@ class RequestController extends Controller
         $ra->user_id = Auth::user()->id;
         $ra->status_id = Status::approved()->first()->id;
         $ra->save();
+        
         // redirect
         return redirect()
             ->route('requests.index')
@@ -187,10 +188,55 @@ class RequestController extends Controller
         return view('requests.editdetail', compact('request','services'));
     }
 
+    public function editticket(ITRequest $request)
+    {
+        $services = Service::all();
+        return view('requests.editticket', compact('request','services'));
+    }
+
+    public function showvalidasi(ITRequest $request)
+    {
+        $services = Service::all();
+        return view('requestapprovals.editvalidation', compact('request','services'));
+    }
+
     public function updatedetail(Request $r, ITRequest $request)
     {
         $request->stage_id = Stage::waitingUserConf()->first()->id;
         $request->detail = $r->input('detail');
+        $request->save();
+
+        $ra = new RequestApproval();
+        $ra->request_id = $request->id;
+        $ra->user_id = Auth::user()->id;
+        $ra->status_id = Status::approved()->first()->id;
+        $ra->save();
+
+        return redirect()
+            ->route('requests.index')
+            ->with('success','Detail layanan berhasil di input');
+    }
+
+    public function managervalidation(Request $r, ITRequest $request)
+    {
+        $request->stage_id = Stage::requestRejected()->first()->id;
+        $request->detail = $r->input('detail');
+        $request->save();
+
+        $ra = new RequestApproval();
+        $ra->request_id = $request->id;
+        $ra->user_id = Auth::user()->id;
+        $ra->status_id = Status::rejected()->first()->id;
+        $ra->save();
+
+        return redirect()
+            ->route('requests.index')
+            ->with('success','Layanan berhasil di reject');
+    }
+
+    public function updateticket(Request $r, ITRequest $request)
+    {
+        $request->stage_id = Stage::ticketCreated()->first()->id;
         $request->ticket = $r->input('ticket');
         $request->save();
 
@@ -210,6 +256,7 @@ class RequestController extends Controller
         $services = Service::all();
         return view('requestapprovals.editreject', compact('request','services'));
     }
+    
 
     public function soreject(ITRequest $request)
     {

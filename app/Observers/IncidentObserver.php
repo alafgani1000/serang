@@ -42,6 +42,11 @@ class IncidentObserver
             $ia->user_id = 3;
             $ia->status_id = Status::waitingForApproval()->first()->id;
             $ia->save();
+            
+            $notification = Auth::user()->notifications->filter(function($item, $key) use($incident){
+                return $item->data['id'] == $incident->id;
+            })->first();
+            $notification->markAsRead();
         }
         else if($incident->stage_id == 9)
         {
@@ -50,6 +55,29 @@ class IncidentObserver
             $ia->user_id = 3;
             $ia->status_id = Status::approved()->first()->id;
             $ia->save();
+            
+            $notification = Auth::user()->notifications->filter(function($item, $key) use($incident){
+                return $item->data['id'] == $incident->id and $item->data['stage_id'] == 4;
+            })->first();
+            $notification->markAsRead();
+        }
+        else if($incident->stage_id == 4)
+        {
+            // inser data ke table incident_approval
+            $ia = new IncidentApproval();
+            $ia->incident_id = $incident->id;
+            $ia->user_id = 3;
+            $ia->status_id = Status::approved()->first()->id;
+            $ia->save();
+            // baca notifikasi berdasarkan user id dan stage
+            $count = Auth::user()->unreadNotifications->count();
+            if($count > 0)
+            {
+                $notification = Auth::user()->notifications->filter(function($item, $key) use($incident){
+                    return $item->data['id'] == $incident->id and  $item->data['stage_id'] == 3;
+                })->first();
+                $notification->markAsRead();
+            }
         }
     }
 

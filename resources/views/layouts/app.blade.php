@@ -132,64 +132,53 @@
 							<li class="purple dropdown-modal">
 								<a data-toggle="dropdown" class="dropdown-toggle" href="#">
 									<i class="ace-icon fa fa-envelope icon-animated-vertical"></i>
-									<span class="badge badge-success">{{Auth::user()->unreadNotifications->where('type', 'App\Notifications\IncidentCreated')->count()}}</span>
+									<span class="badge badge-success">{{Auth::user()->unreadNotifications->count()}}</span>
 								</a>
 
 								<ul class="dropdown-menu-right dropdown-navbar dropdown-menu dropdown-caret dropdown-close">
 									<li class="dropdown-header">
 										<i class="ace-icon fa fa-envelope-o"></i>
-										{{Auth::user()->unreadNotifications->where('type', 'App\Notifications\IncidentCreated')->count()}} Messages
+										{{Auth::user()->unreadNotifications->count()}} Messages
 									</li>
 									<li class="dropdown-content">
 										<ul class="dropdown-menu dropdown-navbar">
-											@foreach (Auth::user()->notifications->where('type', 'App\Notifications\IncidentCreated') as $notification)
-												<a href="#" class="clearfix">
-													<img src="assets/images/avatars/avatar.png" class="msg-photo" alt="Alex's Avatar" />
-													<span class="msg-body">
-														<span class="msg-title">
-															<span class="blue">{{ $notification->data['stage_id'] }} : </span>
-															<span class="blue">{{ $notification->data['description'] }} </span>
+											@foreach (Auth::user()->notifications as $notification)
+												@if($notification->type == "App\Notifications\RequestCreated")
+													<a href="{{ route('requests.approveshow', $unreadNotifications->data['id']) }}" class="clearfix">
+														<img src="{{url('assets/images/avatars/avatar.png')}}" class="msg-photo" alt="Alex's Avatar" />
+														<span class="msg-body">
+															<span class="msg-title">
+																	<span class="blue">{{ $notification->data['stage_id'] }} : </span>
+																	<span class="blue">{{ $notification->data['business_benefit'] }} </span>
+															</span>	
+															<span class="msg-time">
+																<i class="ace-icon fa fa-clock-o"></i>
+																<span>Request</span>
+															</span>
 														</span>
-														
-														<span class="msg-time">
-															<i class="ace-icon fa fa-clock-o"></i>
-															<span>a moment ago</span>
-														</span>
-													</span>
-												</a>
-											@endforeach											
-										</ul>
-									</li>
-								</ul>
-							</li>
-							<li class="purple dropdown-modal">
-								<a data-toggle="dropdown" class="dropdown-toggle" href="#">
-									<i class="ace-icon fa fa-envelope icon-animated-vertical"></i>
-									<span class="badge badge-success">{{Auth::user()->unreadNotifications->where('type', 'App\Notifications\RequestCreated')->count()}}</span>
-								</a>
-
-								<ul class="dropdown-menu-right dropdown-navbar dropdown-menu dropdown-caret dropdown-close">
-									<li class="dropdown-header">
-										<i class="ace-icon fa fa-envelope-o"></i>
-										{{Auth::user()->unreadNotifications->where('type', 'App\Notifications\RequestCreated')->count()}} Messages
-									</li>
-									<li class="dropdown-content">
-										<ul class="dropdown-menu dropdown-navbar">
-											@foreach (Auth::user()->notifications->where('type', 'App\Notifications\RequestCreated') as $notification)
-												<a href="#" class="clearfix">
-													<img src="assets/images/avatars/avatar.png" class="msg-photo" alt="Alex's Avatar" />
-													<span class="msg-body">
-														<span class="msg-title">
-															<span class="blue">{{ $notification->data['stage_id'] }} : </span>
+													</a>
+												@else
+													<a 
+														@if($notification->data['stage_id'] == 3) 
+															href="{{ route('incidents.ticketshow', $notification->data['id']) }}" 
+														@elseif($notification->data['stage_id'] == 4)
+															href="{{ route('incidents.show', $notification->data['id']) }}"
+														@endif
+													class="clearfix">
+														<img src="{{url('assets/images/avatars/avatar.png')}}" class="msg-photo" alt="Alex's Avatar" />
+														<span class="msg-body">
+															<span class="msg-title">
+																	<span class="blue">{{ $notification->data['stage_id'] }} : </span>
+																	<span class="blue">{{ $notification->data['description'] }} </span>
+															</span>
 															
+															<span class="msg-time">
+																<i class="ace-icon fa fa-clock-o"></i>
+																<span>Incident</span>
+															</span>
 														</span>
-														
-														<span class="msg-time">
-															<i class="ace-icon fa fa-clock-o"></i>
-															<span>a moment ago</span>
-														</span>
-													</span>
-												</a>
+													</a>
+												@endif
 											@endforeach											
 										</ul>
 									</li>
@@ -197,7 +186,7 @@
 							</li>
 							<li class="light-blue dropdown-modal">
 								<a data-toggle="dropdown" href="#" class="dropdown-toggle">
-									<img class="nav-user-photo" src="assets/images/avatars/user.jpg" alt="Jasons Photo" />
+									<img class="nav-user-photo" src="{{url('assets/images/avatars/user.jpg')}}" alt="Jasons Photo" />
 									<span class="user-info">
 										<small>Welcome,</small>
 										<b>{{ Auth::user()->name }}</b>
@@ -392,7 +381,7 @@
 						<div class="footer-content">
 							<span class="bigger-120">
 								<!-- <img src="images/logo.png" width="100" height="100" /> -->
-								<b>Mabok Genjer &copy; 2019</b> 
+								<b>Krakatau Steel &copy; 2019</b> 
 							</span>
 						</div>
 					</div>

@@ -11,7 +11,7 @@
                             {{ session('success') }}
                         </div>
                     @endif
-                    <form method="POST" action="{{ route('incidents.detailsave', $incident->id) }}" enctype="multipart/form-data">
+                    <form method="POST" action="{{ route('incidents.ticketcreated', $incident->id) }}" enctype="multipart/form-data">
                         @csrf
                         @method('put')
                         <div class="form-group">

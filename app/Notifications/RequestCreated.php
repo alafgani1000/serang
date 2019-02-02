@@ -44,9 +44,9 @@ class RequestCreated extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                ->greeting('Hello')
+                ->greeting('Dengan Hormat')
                 ->subject($this->request->title)
-                ->line('user id :' . $this->request->user_id)
+                ->line('Nama :' . $this->request->user_id . "(" . $this->request->user->name . ")")
                 ->line('id :' . $this->request->id)
                 ->line('Kebutuhan Bisnis: ' . $this->request->business_need)
                 ->line('Manfaat Bisnis: ' . $this->request->business_benefit)
@@ -65,6 +65,7 @@ class RequestCreated extends Notification
     {
         return [
             'stage_id' => $this->request->stage_id,
+            'id' => $this->request->id,
             'business_benefit' => str_limit($this->request->business_need,50),
         ];
     }

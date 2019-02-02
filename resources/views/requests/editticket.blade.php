@@ -11,32 +11,16 @@
                             {{ session('success') }}
                         </div>
                     @endif
-                    <form method="POST" 
-                        @role('boss')
-                            action="{{ route('requests.bossreject', $request->id) }}" 
-                        @endrole
-                        @role('operation ict|so web|so mes long')
-                            action="{{ route('requests.soreject', $request->id) }}" 
-                        @endrole
-                        enctype="multipart/form-data">
+                    <form method="POST" action="{{ route('requests.updateticket', $request->id) }}" enctype="multipart/form-data">
                         @csrf
                         @method('put')
                         <div class="form-group">
                             <div class="col-md-6">
                                 <div class="btn-group mb-3" role="group">
                                     <button type="submit" class="btn btn-primary">
-                                        Reject
+                                        Save
                                     </button>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="col-md-12">
-                            <label for="title">Title</label>
-                                <input readonly type="text" name="title" id="summernote" rows="2" class="form-control {{ $errors->has('title') ? ' is-invalid' : '' }}" autofocus value="{{$request->title}}">
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $errors->first('title') }}</strong>
-                                    </span>
                             </div>
                         </div>
                         <div class="form-group">
@@ -72,6 +56,15 @@
                                 <textarea readonly name="business_benefit" rows="6" class="form-control {{ $errors->has('business_benefit') ? ' is-invalid' : '' }}" autofocus>{{ $request->business_benefit }}</textarea>
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $errors->first('business_benefit') }}</strong>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <label for="ticket">Ticket</label>
+                                <textarea name="ticket" rows="1" class="form-control {{ $errors->has('ticket') ? ' is-invalid' : '' }}" autofocus>{{ $request->ticket }}</textarea>
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $errors->first('ticket') }}</strong>
                                 </span>
                             </div>
                         </div>

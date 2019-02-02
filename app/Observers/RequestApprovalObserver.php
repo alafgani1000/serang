@@ -77,6 +77,16 @@ class RequestApprovalObserver
             $collection->each(function ($item, $key) use ($requestApproval) {
                 $item->notify(new RequestCreated($requestApproval));
             });
+
+            $role1 = Role::findByName('manager beict');
+            $collection1 = $role1->users;
+
+            $collection1->each(function ($item, $key) use ($requestApproval) {
+                $item->notify(new RequestCreated($requestApproval));
+            });
+
+            $user = User::find($requestApproval->request->user_id);
+            $user->notify(new RequestCreated($requestApproval));
         }
         else if($requestApproval->request->stage_id == 10)
         {

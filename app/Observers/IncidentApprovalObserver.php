@@ -26,6 +26,7 @@ class IncidentApprovalObserver
             $collection->each(function ($item, $key) use ($incidentApproval) {
                 $item->notify(new IncidentCreated($incidentApproval));
             });
+            
         }
         else if($incidentApproval->incident->stage_id == 6)
         {
@@ -41,6 +42,12 @@ class IncidentApprovalObserver
                 $item->notify(new IncidentCreated($incidentApproval));
             });
         }
+        else if($incidentApproval->incident->stage_id == 4)
+        {
+            $user = User::find($incidentApproval->incident->user_id);
+            $user->notify(new IncidentCreated($incidentApproval));
+        }
+        
     }
 
     /**

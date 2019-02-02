@@ -41,6 +41,15 @@
                         </div>
                         <div class="form-group">
                             <div class="col-md-12">
+                            <label for="title">Title</label>
+                                <input type="text" readonly name="title" id="summernote" rows="2" class="form-control {{ $errors->has('title') ? ' is-invalid' : '' }}" autofocus value="{{$request->title}}">
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $errors->first('title') }}</strong>
+                                    </span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-12">
                                 <label for="service_id">Services</label>
                                 <select readonly name="service_id" class="form-control {{ $errors->has('service_id') ? ' is-invalid' : '' }}">
                                         <option>Pilih Service</option>
@@ -76,12 +85,13 @@
                             </div>
                         </div>
                         <div class="form-group">
+                                <div class="col-md-12">
+                                    <label for="business_benefit">File attachment</label>
+                                </div>
+                            </div>
+                        <div class="form-group">
                             <div class="col-md-12">
-                                <label for="customFile">Attachment</label>
-                                <input type="file" class="form-control {{ $errors->has('attachment') ? 'is-invalid' : '' }}" id="customFile" name="attachment">
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $errors->first('attachment') }}</strong>
-                                </span>
+                                <a class="btn btn-primary" href="{{asset('storage/' . $request->attachment) }}" target="_blank"> <label for="customFile">Attachment</label></a>
                             </div>
                         </div>
                     </form>

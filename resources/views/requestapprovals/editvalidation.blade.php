@@ -12,11 +12,8 @@
                         </div>
                     @endif
                     <form method="POST" 
-                        @role('boss')
-                            action="{{ route('requests.bossreject', $request->id) }}" 
-                        @endrole
-                        @role('operation ict|so web|so mes long')
-                            action="{{ route('requests.soreject', $request->id) }}" 
+                        @role('manager beict')
+                            action="{{ route('requests.managervalidation', $request->id) }}" 
                         @endrole
                         enctype="multipart/form-data">
                         @csrf

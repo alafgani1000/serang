@@ -69,21 +69,13 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <div class="col-md-12">
-                                <label for="ticket">Ticket</label>
-                                <textarea name="ticket" rows="1" class="form-control {{ $errors->has('ticket') ? ' is-invalid' : '' }}" autofocus>{{ $request->ticket }}</textarea>
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $errors->first('ticket') }}</strong>
-                                </span>
+                                <div class="col-md-12">
+                                    <label for="business_benefit">File attachment</label>
+                                </div>
                             </div>
-                        </div>
                         <div class="form-group">
                             <div class="col-md-12">
-                                <label for="customFile">Attachment</label>
-                                <input type="file" class="form-control {{ $errors->has('attachment') ? 'is-invalid' : '' }}" id="customFile" name="attachment">
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $errors->first('attachment') }}</strong>
-                                </span>
+                                <a class="btn btn-primary" href="{{asset('storage/' . $request->attachment) }}" target="_blank"> <label for="customFile">Attachment</label></a>
                             </div>
                         </div>
                     </form>

@@ -34,6 +34,7 @@ class IncidentController extends Controller
 
     /**
      * Store a newly created resource in storage.
+     * insert data ke tabel incident
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
@@ -53,18 +54,30 @@ class IncidentController extends Controller
 
     /**
      * Display the specified resource.
-     *
+     * dapatkan jumlah notifikasi
+     * baca nottifikasi berdasarkan user dan stage nya
+     * redirect ke view incidents/show.blade.php
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Incident $incident)
     {
-        //
+        $count = Auth::user()->unreadNotifications->count();
+        if($count > 0)
+        {
+            $notification = Auth::user()->notifications->filter(function($item, $key) use($incident){
+                return $item->data['id'] == $incident->id and  $item->data['stage_id'] == 4;
+            })->first();
+            $notification->markAsRead();
+        }
+        
+        return view('incidents.show', compact('incident'));
     }
 
     /**
      * Show the form for editing the specified resource.
-     *
+     * menampilkan form edit
+     * letak file berada di direktori incidents/edit.blade.php
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
@@ -141,6 +154,21 @@ class IncidentController extends Controller
         return redirect()
             ->route('incidents.index')
             ->with('success','Incident direject');
+    }
+
+    public function ticketshow(Incident $incident)
+    {
+        return view('incidentapprovals.ticket', compact('incident'));
+    }
+
+    public function ticketcreated(Request $request, Incident $incidents, $id)
+    {
+        $incidents = Incident::find($id);
+        $incidents->stage_id = Stage::ticketCreated()->first()->id;
+        $incidents->save();
+        return redirect()
+            ->route('incidents.index')
+            ->with('success','Nomor ticket berhasil di input');
     }
 
     
