@@ -36,7 +36,7 @@
                                     <select id="aksi" name="aksi" class="form-control {{ $errors->has('aksi') ? ' is-invalid' : '' }}">
                                         <option>Pilih aksi</option>
                                         <option value="1">Setujui</option>
-                                        @role('boss|so')
+                                        @role('boss|so|so web')
                                         <option value="2">Tolak</option>
                                         @endrole
                                     </select>
@@ -52,7 +52,7 @@
                             <div class="col-md-12">
                             <label for="title">Judul</label>
                                 <input 
-                                @role('employee|service desk|operation sd|operation ict|manager beict')
+                                @role('employee|service desk|operation sd|operation ict|manager beict|so web')
                                     readonly
                                 @endrole
                                     
@@ -66,7 +66,7 @@
                             <div class="col-md-12">
                                 <label for="service_id">Layanan</label>
                                 <select 
-                                @role('employee|service desk|operation sd|operation ict|manager beict')
+                                @role('employee|service desk|operation sd|operation ict|manager beict|so web')
                                     readonly
                                 @endrole
                                 id="idservice" name="service_id" class="form-control {{ $errors->has('service_id') ? ' is-invalid' : '' }}">
@@ -88,7 +88,7 @@
                             <div class="col-md-12">
                                 <label for="categories">Kategori Layanan</label>
                                 <select 
-                                @role('employee|service desk|operation sd|operation ict|manager beict')
+                                @role('employee|service desk|operation sd|operation ict|manager beict|so web')
                                 readonly
                                 @endrole
                                 id="idcategories" name="categories" class="form-control {{ $errors->has('categories') ? ' is-invalid' : '' }}">
@@ -110,7 +110,7 @@
                             <div class="col-md-12">
                                 <label for="business_need">Kebutuhan Bisnis</label>
                                 <textarea 
-                                @role('employee|service desk|operation sd|operation ict|manager beict')
+                                @role('employee|service desk|operation sd|operation ict|manager beict|so web')
                                 readonly
                                 @endrole
                                 name="business_need" id="summernote" rows="6" class="form-control {{ $errors->has('business_need') ? ' is-invalid' : '' }}" autofocus>{{ $request->business_need }}</textarea>
@@ -123,7 +123,7 @@
                             <div class="col-md-12">
                                 <label for="business_benefit">Manfaat Bisnis</label>
                                 <textarea 
-                                @role('employee|service desk|operation sd|operation ict|manager beict')
+                                @role('employee|service desk|operation sd|operation ict|manager beict|so web')
                                 readonly
                                 @endrole
                                 name="business_benefit" rows="6" class="form-control {{ $errors->has('business_benefit') ? ' is-invalid' : '' }}" autofocus>{{ $request->business_benefit }}</textarea>
@@ -132,7 +132,7 @@
                                 </span>
                             </div>
                         </div>
-                        @role('so')
+                        @role('so|so web')
                         <div class="form-group">
                             <div class="col-md-12">
                                 <label for="reason">Alasan</label>

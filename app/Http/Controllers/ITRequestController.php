@@ -440,7 +440,7 @@ class RequestController extends Controller
         $ra->save();
 
         $notification = Auth::user()->notifications->filter(function($item, $key) use($request){
-            return $item->data['id'] == $request->id and $item->data['stage_id'] == 7;
+            return $item->data['id'] == ( $request->id and $item->data['stage_id'] == 2 or $request->id and $item->data['stage_id'] == 7);
         })->first();
         $notification->markAsRead();
 
