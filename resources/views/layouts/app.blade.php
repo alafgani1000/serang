@@ -59,6 +59,12 @@
 				});
 				
 				$("#notif").html();
+
+				$("#idservice").change(function(){
+					$("#idcategories").html('<option>Pilih Kategori</option>' +
+											'<option value="1">Permintaan akses</option>' +
+											'<option value="2">Perubahan atau penambahan aplikasi</option>');
+				});
 			});
 		</script>
 		<!-------------------------------akhir dari color box------------------------------------>
@@ -72,6 +78,7 @@
 					changeYear: true
 				});
 			});
+
 		</script>
 		
 		<style>
@@ -142,9 +149,9 @@
 									</li>
 									<li class="dropdown-content">
 										<ul class="dropdown-menu dropdown-navbar">
-											@foreach (Auth::user()->notifications as $notification)
+											@foreach (Auth::user()->unreadNotifications as $notification)
 												@if($notification->type == "App\Notifications\RequestCreated")
-													<a href="{{ route('requests.approveshow', $unreadNotifications->data['id']) }}" class="clearfix">
+													<a href="{{ route('requests.approveshow', $notification->data['id']) }}" class="clearfix">
 														<img src="{{url('assets/images/avatars/avatar.png')}}" class="msg-photo" alt="Alex's Avatar" />
 														<span class="msg-body">
 															<span class="msg-title">

@@ -17,7 +17,7 @@
                             <div class="col-md-6">
                                 <div class="btn-group mb-3" role="group">
                                     <button type="submit" class="btn btn-primary">
-                                        Save
+                                        Simpan
                                     </button>
                                 </div>
                             </div>

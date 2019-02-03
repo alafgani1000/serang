@@ -25,6 +25,64 @@
                         </div>
                         <div class="form-group">
                             <div class="col-md-12">
+                            <label for="title">Judul</label>
+                                <input 
+                                @role('employee|service desk|operation sd|operation ict|manager beict')
+                                    readonly
+                                @endrole
+                                    
+                                type="text" name="title" id="summernote" rows="2" class="form-control {{ $errors->has('title') ? ' is-invalid' : '' }}" autofocus value="{{$request->title}}">
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $errors->first('title') }}</strong>
+                                    </span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <label for="service_id">Layanan</label>
+                                <select 
+                                @role('employee|service desk|operation sd|operation ict|manager beict')
+                                    readonly
+                                @endrole
+                                id="idservice" name="service_id" class="form-control {{ $errors->has('service_id') ? ' is-invalid' : '' }}">
+                                        <option>Pilih Service</option>
+                                    @foreach ($services as $service)
+                                        @if($service->id == $request->service_id)
+                                            <option selected value={{$service->id}}>{{$service->name}}</option>
+                                        @else
+                                            <option value={{$service->id}}>{{$service->name}}</option>
+                                        @endif
+                                    @endforeach
+                                </select>
+                                <span class="invalid-feedback" role="alert">
+                                <strong>{{ $errors->first('service_id') }}</strong>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-group" >
+                            <div class="col-md-12">
+                                <label for="categories">Kategori Layanan</label>
+                                <select 
+                                @role('employee|service desk|operation sd|operation ict|manager beict')
+                                readonly
+                                @endrole
+                                id="idcategories" name="categories" class="form-control {{ $errors->has('categories') ? ' is-invalid' : '' }}">
+                                    <option>Pilih Kategori</option>
+                                    @foreach ($categories as $category)
+                                    @if($category->id == $request->category_id)
+                                        <option selected value={{$category->id}}>{{$category->name}}</option>
+                                    @else
+                                        <option value={{$category->id}}>{{$category->name}}</option>
+                                    @endif
+                                @endforeach
+                                </select>
+                                <span class="invalid-feedback" role="alert">
+                                <strong>{{ $errors->first('categories') }}</strong>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-12">
                                 <label for="service_id">Services</label>
                                 <select readonly name="service_id" class="form-control {{ $errors->has('service_id') ? ' is-invalid' : '' }}">
                                         <option>Pilih Service</option>
@@ -59,6 +117,15 @@
                                 </span>
                             </div>
                         </div>
+                        <div class="form-group">
+                                <div class="col-md-12">
+                                    <label for="ticket">Ticket kaseya</label>
+                                    <textarea readonly name="ticket" rows="1" class="form-control {{ $errors->has('ticket') ? ' is-invalid' : '' }}" autofocus>{{ $request->ticket }}</textarea>
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $errors->first('ticket') }}</strong>
+                                    </span>
+                                </div>
+                            </div>
                         <div class="form-group">
                             <div class="col-md-12">
                                 <label for="detail">Detail Layanan</label>

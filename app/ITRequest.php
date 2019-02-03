@@ -7,8 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class ITRequest extends Model
 {
     protected $table = 'requests';
-    
-    
+
     public function service()
     {
         return $this->belongsTo('App\Service');
@@ -26,6 +25,11 @@ class ITRequest extends Model
 
     public function requestApprovals()
     {
-        return $this->hasMany('App\RequestApproval','request_id');
+        return $this->hasMany('App\RequestApproval', 'request_id');
+    }
+
+    public function category()
+    {
+        return $this->belongsTo('App\Category','category_id');
     }
 }

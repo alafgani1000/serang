@@ -2,12 +2,10 @@
 
 namespace App\Notifications;
 
-use Illuminate\Bus\Queueable;
-use Illuminate\Notifications\Notification;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
-use App\ITRequest;
 use App\RequestApproval;
+use Illuminate\Bus\Queueable;
+use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Notification;
 
 class RequestCreated extends Notification
 {
@@ -32,7 +30,7 @@ class RequestCreated extends Notification
      */
     public function via($notifiable)
     {
-        return ['database','mail'];
+        return ['database', 'mail'];
     }
 
     /**
@@ -43,16 +41,33 @@ class RequestCreated extends Notification
      */
     public function toMail($notifiable)
     {
+        if ($this->request->stage->id == 1) {
+            $url = route('requests.approveshow', $this->request->id);
+        } elseif ($this->request->stage->id == 2) {
+            $url = route('requests.approveshow', $this->request->id);
+        } elseif ($this->request->stage->id == 7) {
+            $url = route('requests.approveshow', $this->request->id);
+        } elseif ($this->request->stage->id == 10) {
+            $url = route('requests.approveshow', $this->request->id);
+        } elseif ($this->request->stage->id == 6) {
+            $url = route('requests.approveshow', $this->request->id);
+        } elseif ($this->request->stage->id == 3) {
+            $url = route('requests.editticket', $this->request->id);
+        } elseif ($this->request->stage->id == 4) {
+            $url = route('requests.editdetail', $this->request->id);
+        } else{
+            $url = '';
+        }
         return (new MailMessage)
-                ->greeting('Dengan Hormat')
-                ->subject($this->request->title)
-                ->line('Nama :' . $this->request->user_id . "(" . $this->request->user->name . ")")
-                ->line('id :' . $this->request->id)
-                ->line('Kebutuhan Bisnis: ' . $this->request->business_need)
-                ->line('Manfaat Bisnis: ' . $this->request->business_benefit)
-                ->line($this->request->stage->name)
-                ->action('Notification Action', url('/'))
-                ->line('Thank you');
+            ->greeting('Dengan Hormat')
+            ->subject($this->request->title)
+            ->line('Nama :' . $this->request->user_id . "(" . $this->request->user->name . ")")
+            ->line('id :' . $this->request->id)
+            ->line('Kebutuhan Bisnis: ' . $this->request->business_need)
+            ->line('Manfaat Bisnis: ' . $this->request->business_benefit)
+            ->line($this->request->stage->name)
+            ->action('Notification Action', $url)
+            ->line('Thank you');
     }
 
     /**
@@ -66,7 +81,7 @@ class RequestCreated extends Notification
         return [
             'stage_id' => $this->request->stage_id,
             'id' => $this->request->id,
-            'business_benefit' => str_limit($this->request->business_need,50),
+            'business_benefit' => str_limit($this->request->business_need, 50),
         ];
     }
 }

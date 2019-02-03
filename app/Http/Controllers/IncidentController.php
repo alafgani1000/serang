@@ -170,6 +170,5 @@ class IncidentController extends Controller
             ->route('incidents.index')
             ->with('success','Nomor ticket berhasil di input');
     }
-
     
 }

@@ -29,6 +29,8 @@ class StoreITRequestRequest extends FormRequest
             'title' => 'required',
             'business_benefit' => 'required|max:255',
             'attachment' => 'required|image',
+            'attachment' => 'required',
+            'category' => 'required',
         ];
     }
 }

@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('content')
 <a class="btn btn-primary" href="{{route('incidents.create')}}">
-    Create
+    Buat baru
 </a>
 <p>&nbsp;</p>
 @if (session('success'))

@@ -20,6 +20,4 @@ class Incident extends Model
     {
         return $this->hasMany('App\IncidentApproval');
     }
-    
-   
 }

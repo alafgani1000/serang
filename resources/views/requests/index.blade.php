@@ -17,11 +17,12 @@
             <th width="7%">LAYANAN</th>
             <th width="15%">MANFAAT BISNIS</th>
 			<th width="15%">KEBUTUHAN BISNIS</th>
-			<th width="5%">TICKET</th>
+			<th width="5%">KATEGORY</th>
+			<th width="5%">TIKET</th>
 			<th width="15%">DETAIL LAYANAN</th>
             <th width="10%">FILE</th>
             <th width="10%">USER</th>
-            <th width="15%">STAGE</th>
+            <th width="15%">TAHAP</th>
             <th width="18%">AKSI</th>
 		</tr>
 	</thead>
@@ -32,6 +33,7 @@
 				<td>{{$request->service->name}}</td>
 				<td>{{$request->business_need}}</td>
 				<td>{{$request->business_benefit}}</td>
+				<td>{{$request->category->name}}</td>
 				<td>{{$request->ticket}}</td>
 				<td>{{$request->detail}}</td>
 				<td><a class="btn btn-primary" href="{{asset('storage/' . $request->attachment) }}" target="_blank">File</a></td>
@@ -61,7 +63,7 @@
 					<td>
 						@if($request->stage->id == 1)
 							<a class="btn btn-primary" href="{{ route('requests.approveshow', $request->id) }}">Approval</a>
-							<a class="btn btn-primary" href="{{ route('requests.editreject', $request->id) }}">Reject</a>
+							{{-- <a class="btn btn-primary" href="{{ route('requests.editreject', $request->id) }}">Reject</a> --}}
 						@elseif($request->stage->id == 2 or $request->stage->id == 4 or $request->stage->id == 5)
 							<a  class="btn btn-success" disabled href="#">Success</a>
 						@endif
@@ -71,7 +73,7 @@
 					<td>
 						@if($request->stage->id == 2)
 							<a class="btn btn-primary" href="{{ route('requests.approveshow', $request->id) }}">Approval</a>
-							<!--<a class="btn btn-primary" href="{{ route('requests.editreject', $request->id) }}">Reject</a>-->
+							{{-- <!--<a class="btn btn-primary" href="{{ route('requests.editreject', $request->id) }}">Reject</a>--> --}}
 							<a class="btn btn-primary" href="{{ route('requests.eskalasiso', $request->id) }}">Eskalasi</a>
 						@elseif($request->stage->id == 7)
 							<a  class="btn btn-success" disabled href="#">Success</a>
@@ -88,9 +90,9 @@
 							<a  class="btn btn-success" disabled href="#">Success</a>
 						@elseif($request->stage->id == 5)
 							<a class="btn btn-primary" href="{{ route('requests.approveshow', $request->id) }}">Approval</a>
-						@elseif($request->stage->id == 10)
+						{{-- @elseif($request->stage->id == 10)
 							<a class="btn btn-primary" href="{{ route('requests.approveshow', $request->id) }}">Approval</a>
-							<a class="btn btn-primary" href="{{ route('requests.editreject', $request->id) }}">Reject</a>
+							<a class="btn btn-primary" href="{{ route('requests.editreject', $request->id) }}">Reject</a> --}}
 						@endif
 					</td>
 				@endrole
@@ -102,7 +104,7 @@
 						<a class="btn btn-primary" href="{{ route('requests.approveshow', $request->id) }}">Approval</a>
 					@elseif($request->stage->id == 10)
 						<a class="btn btn-primary" href="{{ route('requests.approveshow', $request->id) }}">Approval</a>
-						<a class="btn btn-primary" href="{{ route('requests.editreject', $request->id) }}">Reject</a>
+						{{-- <a class="btn btn-primary" href="{{ route('requests.editreject', $request->id) }}">Reject</a> --}}
 					@endif
 				</td>
 				@endrole
@@ -113,13 +115,13 @@
 						@endif
 					</td>
 				@endrole
-				@role('manager beict')
+				{{-- @role('manager beict')
 					@if($request->stage->id == 8) 
 						<td>
 							<a class="btn btn-primary" href="{{ route('requests.showvalidasi', $request->id) }}">Approval</a>
 						</td>
 					@endif
-				@endrole
+				@endrole --}}
 			</tr>
 		@endforeach
 	</tbody>

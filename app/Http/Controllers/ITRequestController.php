@@ -7,6 +7,7 @@ use App\ITRequest;
 use App\Service;
 use App\Stage;
 use App\Status;
+use App\Category;
 use App\RequestApproval;
 use App\Http\Requests;
 use Illuminate\Support\Facades\Auth;
@@ -55,6 +56,7 @@ class RequestController extends Controller
         $r->business_need = $request->input('business_need');
         $r->business_benefit = $request->input('business_benefit');
         $r->stage_id = Stage::waitingBossApproval()->first()->id;
+        $r->category_id = $request->input('category');
         $r->user_id = Auth::user()->id;
         $r->save();
         return redirect()
@@ -126,36 +128,111 @@ class RequestController extends Controller
 
     public function approvesave(Request $r, ITRequest $request)
     {
-        // update stage
-        $request->stage_id = Stage::waitingForOperationDesk()->first()->id;
-        $request->save();
-        // save request approvals
-        $ra = new RequestApproval();
-        $ra->request_id = $request->id;
-        $ra->user_id = Auth::user()->id;
-        $ra->status_id = Status::approved()->first()->id;
-        $ra->save();
-        
-        // redirect
-        return redirect()
-            ->route('requests.index')
-            ->with('success','Request berhasil disetujui');
+
+        if($r->input('aksi') == "1")
+        {
+            // update stage
+            if($r->input('categories') == 2)
+            {
+                $request->stage_id = Stage::waitingForOperationDesk()->first()->id;
+                $request->service_id = $r->input('service_id');
+                $request->title = $r->input('title');
+                $request->business_need = $r->input('business_need');
+                $request->business_benefit = $r->input('business_benefit');
+                $request->save();
+            }
+            elseif($r->input('categories') == 1)
+            {
+                $request->stage_id = Stage::waitingForServiceDesk()->first()->id;
+                $request->service_id = $r->input('service_id');
+                $request->title = $r->input('title');
+                $request->business_need = $r->input('business_need');
+                $request->business_benefit = $r->input('business_benefit');
+                $request->save();
+            }
+            // save request approvals
+            $ra = new RequestApproval();
+            $ra->request_id = $request->id;
+            $ra->user_id = Auth::user()->id;
+            $ra->status_id = Status::approved()->first()->id;
+            $ra->save();
+
+            $notification = Auth::user()->notifications->filter(function($item, $key) use($request){
+                return $item->data['id'] == $request->id and $item->data['stage_id'] == 1;
+            })->first();
+            $notification->markAsRead();
+
+            // redirect
+            return redirect()
+                ->route('requests.index')
+                ->with('success','Request berhasil disetujui');
+        }
+        elseif($r->input('aksi') == "2")
+        {
+            $request->stage_id = Stage::requestDenied()->first()->id;
+            $request->save();
+    
+            $ra = new RequestApproval();
+            $ra->request_id = $request->id;
+            $ra->user_id = Auth::user()->id;
+            $ra->status_id = Status::rejected()->first()->id;
+            $ra->save();
+
+            $notification = Auth::user()->notifications->filter(function($item, $key) use($request){
+                return $item->data['id'] == $request->id and $item->data['stage_id'] == 3;
+            })->first();
+            $notification->markAsRead();
+    
+            return redirect()
+                ->route('requests.index')
+                ->with('success','Request berhasil ditolak');
+        }
     }
 
     public function soapprove(Request $r, ITRequest $request)
     {
-        // update stage
-        $request->stage_id = Stage::waitingForServiceDesk()->first()->id;
-        $request->save();
-        // save request approvals
-        $ra = new RequestApproval();
-        $ra->request_id = $request->id;
-        $ra->user_id = Auth::user()->id;
-        $ra->status_id = Status::approved()->first()->id;
-        $ra->save();
-        return redirect()
-            ->route('requests.index')
-            ->with('success','Request berhasil disetujui');
+        if($r->input('aksi') == "1")
+        {
+            // update stage
+            $request->stage_id = Stage::waitingForServiceDesk()->first()->id;
+            $request->save();
+            // save request approvals
+            $ra = new RequestApproval();
+            $ra->request_id = $request->id;
+            $ra->user_id = Auth::user()->id;
+            $ra->status_id = Status::approved()->first()->id;
+            $ra->save();
+
+            $notification = Auth::user()->notifications->filter(function($item, $key) use($request){
+                return $item->data['id'] == $request->id and $item->data['stage_id'] == 10;
+            })->first();
+            $notification->markAsRead();
+
+            return redirect()
+                ->route('requests.index')
+                ->with('success','Request berhasil disetujui');
+        }
+        elseif($r->input('aksi') == "2")
+        {
+            $request->stage_id = Stage::requestDenied()->first()->id;
+            $request->reason = $r->input('reason');
+            $request->save();
+    
+            $ra = new RequestApproval();
+            $ra->request_id = $request->id;
+            $ra->user_id = Auth::user()->id;
+            $ra->status_id = Status::rejected()->first()->id;
+            $ra->save();
+
+            $notification = Auth::user()->notifications->filter(function($item, $key) use($request){
+                return $item->data['id'] == $request->id and $item->data['stage_id'] == 10;
+            })->first();
+            $notification->markAsRead();
+    
+            return redirect()
+                ->route('requests.index')
+                ->with('success','Request berhasil ditolak');
+        }
 
     }
 
@@ -170,6 +247,12 @@ class RequestController extends Controller
         $ra->user_id = Auth::user()->id;
         $ra->status_id = Status::approved()->first()->id;
         $ra->save();
+
+        $notification = Auth::user()->notifications->filter(function($item, $key) use($request){
+            return $item->data['id'] == $request->id and $item->data['stage_id'] == 2;
+        })->first();
+        $notification->markAsRead();
+
         return redirect()
             ->route('requests.index')
             ->with('success','Request berhasil disetujui');
@@ -179,19 +262,22 @@ class RequestController extends Controller
     public function approveshow(ITRequest $request)
     {
         $services = Service::all();
-        return view('requestapprovals.edit', compact('request','services'));
+        $categories = Category::all();
+        return view('requestapprovals.edit', compact('request','services','categories'));
     }
 
     public function editdetail(ITRequest $request)
     {
         $services = Service::all();
-        return view('requests.editdetail', compact('request','services'));
+        $categories = Category::all();
+        return view('requests.editdetail', compact('request','services','categories'));
     }
 
     public function editticket(ITRequest $request)
     {
         $services = Service::all();
-        return view('requests.editticket', compact('request','services'));
+        $categories = Category::all();
+        return view('requests.editticket', compact('request','services','categories'));
     }
 
     public function showvalidasi(ITRequest $request)
@@ -211,6 +297,11 @@ class RequestController extends Controller
         $ra->user_id = Auth::user()->id;
         $ra->status_id = Status::approved()->first()->id;
         $ra->save();
+
+        $notification = Auth::user()->notifications->filter(function($item, $key) use($request){
+            return $item->data['id'] == $request->id and $item->data['stage_id'] == 4;
+        })->first();
+        $notification->markAsRead();
 
         return redirect()
             ->route('requests.index')
@@ -246,9 +337,14 @@ class RequestController extends Controller
         $ra->status_id = Status::approved()->first()->id;
         $ra->save();
 
+        $notification = Auth::user()->notifications->filter(function($item, $key) use($request){
+            return $item->data['id'] == $request->id and $item->data['stage_id'] == 3;
+        })->first();
+        $notification->markAsRead();
+
         return redirect()
             ->route('requests.index')
-            ->with('success','Detail layanan berhasil di input');
+            ->with('success','Nomor ticket kaseya berhasil di input');
     }
 
     public function editreject(ITRequest $request)
@@ -301,6 +397,11 @@ class RequestController extends Controller
         $ra->status_id = Status::approved()->first()->id;
         $ra->save();
 
+        $notification = Auth::user()->notifications->filter(function($item, $key) use($request){
+            return $item->data['id'] == $request->id and $item->data['stage_id'] == 6;
+        })->first();
+        $notification->markAsRead();
+
         return redirect()
             ->route('requests.index')
             ->with('success','Request ditolak');
@@ -317,9 +418,14 @@ class RequestController extends Controller
         $ra->status_id = Status::approved()->first()->id;
         $ra->save();
 
+        $notification = Auth::user()->notifications->filter(function($item, $key) use($request){
+            return $item->data['id'] == $request->id and $item->data['stage_id'] == 7;
+        })->first();
+        $notification->markAsRead();
+
         return redirect()
             ->route('requests.index')
-            ->with('success','Request ditolak');
+            ->with('success','Request berhasil di setujui');
     }
 
     public function eskalasiso(Request $r, ITRequest $request)
@@ -333,9 +439,14 @@ class RequestController extends Controller
         $ra->status_id = Status::approved()->first()->id;
         $ra->save();
 
+        $notification = Auth::user()->notifications->filter(function($item, $key) use($request){
+            return $item->data['id'] == $request->id and $item->data['stage_id'] == 7;
+        })->first();
+        $notification->markAsRead();
+
         return redirect()
             ->route('requests.index')
-            ->with('success','Request ditolak');
+            ->with('success','Request berhasil di eskalasi ke Service Owner');
     }
     
 }
