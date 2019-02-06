@@ -41,33 +41,51 @@ class RequestCreated extends Notification
      */
     public function toMail($notifiable)
     {
-        if ($this->request->stage->id == 1) {
+        $nda;
+        if ($this->request->stage->id == 6) {
             $url = route('requests.approveshow', $this->request->id);
-        } elseif ($this->request->stage->id == 2) {
-            $url = route('requests.approveshow', $this->request->id);
-        } elseif ($this->request->stage->id == 7) {
-            $url = route('requests.approveshow', $this->request->id);
-        } elseif ($this->request->stage->id == 10) {
-            $url = route('requests.approveshow', $this->request->id);
-        } elseif ($this->request->stage->id == 6) {
-            $url = route('requests.approveshow', $this->request->id);
-        } elseif ($this->request->stage->id == 3) {
-            $url = route('requests.editticket', $this->request->id);
-        } elseif ($this->request->stage->id == 4) {
-            $url = route('requests.editdetail', $this->request->id);
-        } else{
-            $url = '';
+            return (new MailMessage)
+                    ->greeting('Dengan Hormat')
+                    ->subject($this->request->title)
+                    ->line('Nama :' . $this->request->user_id . "(" . $this->request->user->name . ")")
+                    ->line('id :' . $this->request->id)
+                    ->line('Kebutuhan Bisnis: ' . $this->request->business_need)
+                    ->line('Manfaat Bisnis: ' . $this->request->business_benefit)
+                    ->line($this->request->stage->name)
+                    ->line('This nda nda nda nda nda')
+                    ->action('Notification Action', $url)
+                    ->line('Thank you');
         }
-        return (new MailMessage)
-            ->greeting('Dengan Hormat')
-            ->subject($this->request->title)
-            ->line('Nama :' . $this->request->user_id . "(" . $this->request->user->name . ")")
-            ->line('id :' . $this->request->id)
-            ->line('Kebutuhan Bisnis: ' . $this->request->business_need)
-            ->line('Manfaat Bisnis: ' . $this->request->business_benefit)
-            ->line($this->request->stage->name)
-            ->action('Notification Action', $url)
-            ->line('Thank you');
+        else
+        {
+                
+            if ($this->request->stage->id == 1) {
+                $url = route('requests.approveshow', $this->request->id);
+            } elseif ($this->request->stage->id == 2) {
+                $url = route('requests.approveshow', $this->request->id);
+            } elseif ($this->request->stage->id == 7) {
+                $url = route('requests.approveshow', $this->request->id);
+            } elseif ($this->request->stage->id == 10) {
+                $url = route('requests.approveshow', $this->request->id);
+            } elseif ($this->request->stage->id == 3) {
+                $url = route('requests.editticket', $this->request->id);
+            } elseif ($this->request->stage->id == 4) {
+                $url = route('requests.editdetail', $this->request->id);
+            } else{
+                $url = '';
+            }
+
+            return (new MailMessage)
+                    ->greeting('Dengan Hormat')
+                    ->subject($this->request->title)
+                    ->line('Nama :' . $this->request->user_id . "(" . $this->request->user->name . ")")
+                    ->line('id :' . $this->request->id)
+                    ->line('Kebutuhan Bisnis: ' . $this->request->business_need)
+                    ->line('Manfaat Bisnis: ' . $this->request->business_benefit)
+                    ->line($this->request->stage->name)
+                    ->action('Notification Action', $url)
+                    ->line('Thank you');
+        }
     }
 
     /**

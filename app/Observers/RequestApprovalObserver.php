@@ -23,19 +23,34 @@ class RequestApprovalObserver
      */
     public function created(RequestApproval $requestApproval)
     {
-        if($requestApproval->request->stage_id == 1)
+        // waiting boss approve stage 1
+        if($requestApproval->request->stage_id == Stage::waitingBossApproval()->first()->id)
         {
             $boss = Auth::user()->boss();
             $boss->notify(new RequestCreated($requestApproval));
         }
-        else if($requestApproval->request->stage_id == 2)
+        // waiting operation desc stage 2
+        else if($requestApproval->request->stage_id == Stage::waitingForOperationDesk()->first()->id)
         {
+            // notifikasi operation sd
             $role = Role::findByName('operation sd');
             $collection = $role->users;
-
             $collection->each(function ($item, $key) use ($requestApproval) {
                 $item->notify(new RequestCreated($requestApproval));
             });
+            // notifikasi operation sptict
+            $role = Role::findByName('operation ict');
+            $collection = $role->users;
+            $collection->each(function ($item, $key) use ($requestApproval) {
+                $item->notify(new RequestCreated($requestApproval));
+            });
+            // notifikasi manager
+            $role1 = Role::findByName('manager beict');
+            $collection1 = $role1->users;
+            $collection1->each(function ($item, $key) use ($requestApproval) {
+                $item->notify(new RequestCreated($requestApproval));
+            });
+
         }
         else if($requestApproval->request->stage_id == 7)
         {
@@ -46,19 +61,28 @@ class RequestApprovalObserver
                 $item->notify(new RequestCreated($requestApproval));
             });
         }
-        else if($requestApproval->request->stage_id == 3)
+        // waiting operation desc stage 3
+        else if($requestApproval->request->stage_id == Stage::waitingForServiceDesk()->first()->id)
         {
+            // notifikasi to service desk
             $role = Role::findByName('service desk');
             $collection = $role->users;
-
             $collection->each(function ($item, $key) use ($requestApproval) {
                 $item->notify(new RequestCreated($requestApproval));
             });
-        }
-        else if($requestApproval->request->stage_id == 6)
-        {
+            // notifikasi to user request
             $user = User::find($requestApproval->request->user_id);
             $user->notify(new RequestCreated($requestApproval));
+        }
+        // stage waiting user confirmation
+        else if($requestApproval->request->stage_id == Stage::waitingUserConf()->first()->id)
+        {
+            $user = User::find($requestApproval->request->user_id);
+            $boss = $user->boss();
+            $boss->notify(new RequestCreated($requestApproval));
+
+            $user1 = User::find($requestApproval->request->user_id);
+            $user1->notify(new RequestCreated($requestApproval));
         }
         else if($requestApproval->request->stage_id == 9)
         {
@@ -69,22 +93,22 @@ class RequestApprovalObserver
                 $item->notify(new RequestCreated($requestApproval));
             });
         }
-        else if($requestApproval->request->stage_id == 8)
+        // stage request rejected 11
+        else if($requestApproval->request->stage_id == Stage::requestRejected()->first()->id)
         {
+            // notifikasi to service desk
             $role = Role::findByName('service desk');
             $collection = $role->users;
-
             $collection->each(function ($item, $key) use ($requestApproval) {
                 $item->notify(new RequestCreated($requestApproval));
             });
-
+            // notifikasi to manager beict
             $role1 = Role::findByName('manager beict');
             $collection1 = $role1->users;
-
             $collection1->each(function ($item, $key) use ($requestApproval) {
                 $item->notify(new RequestCreated($requestApproval));
             });
-
+            // notifikasi to user request
             $user = User::find($requestApproval->request->user_id);
             $user->notify(new RequestCreated($requestApproval));
         }
@@ -97,6 +121,16 @@ class RequestApprovalObserver
             $user->each(function ($item, $key) use ($requestApproval) {
                 $item->notify(new RequestCreated($requestApproval));
             });
+        }
+        // stage ticket created 4
+        else if($requestApproval->request->stage_id == Stage::ticketCreated()->first()->id)
+        {
+            // notifikasi to user request
+            $user = User::find($requestApproval->request->user_id);
+            $user->notify(new RequestCreated($requestApproval));
+            // notifiksi to service desk
+            $user = User::find($requestApproval->user_id);
+            $user->notify(new RequestCreated($requestApproval));
         }
 
     }

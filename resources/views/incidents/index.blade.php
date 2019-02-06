@@ -1,8 +1,10 @@
 @extends('layouts.app')
 @section('content')
-<a class="btn btn-primary" href="{{route('incidents.create')}}">
-    Buat baru
-</a>
+@role('employee')
+    <a class="btn btn-primary" href="{{route('incidents.create')}}">
+        Buat baru
+    </a>
+@endrole
 <p>&nbsp;</p>
 @if (session('success'))
     <div class="alert alert-success" role="alert">
@@ -14,12 +16,14 @@
 	<thead class="table-success">
         <tr>
             <th width="5%">ID</th>
-            <th width="20%">Deskripsi</th>
-            <th width="20%">Dampak</th>
-            <th width="5%">User</th>
+            <th width="15%">Deskripsi</th>
+            <th width="15%">Dampak</th>
+            <th width="15%">Tiket</th>
+            <th width="15%">Detail Layanan</th>
+            <th width="10%">User</th>
             <th width="5%">Tahap</th>
             <th width="15%">Dibuat</th>
-            <th width="20%">Aksi</th>
+            <th width="15%">Aksi</th>
         </tr>
     </thead>
     <tbody>
@@ -28,6 +32,8 @@
                 <td>{{$incident->id}}</td>
                 <td>{{$incident->description}}</td>
                 <td>{{$incident->impact}}</td>
+                <td>{{$incident->ticket}}</td>
+                <td>{{$incident->detail}}</td>
                 <td>{{$incident->user->IdWithName}}</td>
                 <td>{{$incident->stage->name}}</td>
                 <td>{{$incident->created_at}}</td>

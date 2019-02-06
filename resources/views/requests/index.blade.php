@@ -1,9 +1,10 @@
 @extends('layouts.app')
 @section('content')
-
-<a href="{{route('requests.create')}}" class="control">
-    <button class="btn btn-primary">Tambah Data</button>
-</a>
+@role('employee')
+	<a href="{{route('requests.create')}}" class="control">
+		<button class="btn btn-primary">Buat Permintaan</button>
+	</a>
+@endrole
 <p>&nbsp;</p>
 @if (session('success'))
     <div class="alert alert-success" role="alert">
@@ -14,16 +15,19 @@
 	<thead class="table-success">
 		<tr>
 			<th class="center" width="5%"> ID </th>
-            <th width="7%">LAYANAN</th>
-            <th width="15%">MANFAAT BISNIS</th>
-			<th width="15%">KEBUTUHAN BISNIS</th>
-			<th width="5%">KATEGORY</th>
+			<th width="7%">LAYANAN</th>
+			<th width="5%">KATEGORI</th>
+            <th width="15%">ALASAN PERMINTAAN</th>
+			<th width="15%">MANFAAT TERHADAP BISNIS</th>
 			<th width="5%">TIKET</th>
 			<th width="15%">DETAIL LAYANAN</th>
-            <th width="10%">FILE</th>
-            <th width="10%">USER</th>
-            <th width="15%">TAHAP</th>
-            <th width="18%">AKSI</th>
+			<th width="10%">FILE</th>
+			@role('boss|service desk|operation sd|operation ict|so web|so')
+				<th width="10%">PEMINTA</th>
+			@endrole
+			<th width="15%">TAHAP</th>
+			<th width="10%">TANGGAL PERMINTAAN</th>
+			<th width="18%">&nbsp;</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -31,14 +35,18 @@
 			<tr>
 				<td>{{$request->id}}</td>
 				<td>{{$request->service->name}}</td>
+				<td>{{$request->category->name}}</td>
 				<td>{{$request->business_need}}</td>
 				<td>{{$request->business_benefit}}</td>
-				<td>{{$request->category->name}}</td>
 				<td>{{$request->ticket}}</td>
 				<td>{{$request->detail}}</td>
 				<td><a class="btn btn-primary" href="{{asset('storage/' . $request->attachment) }}" target="_blank">File</a></td>
-				<td>{{$request->user->idWithName}}</td>
+				@role('boss|service desk|operation sd|operation ict|so web|so')
+					<td>{{$request->user->idWithName}}</td>
+				@endrole
 				<td>{{$request->stage->name}}</td>
+				<td>{{$request->created_at}}</td>
+				@role('boss|service desk|operation sd|operation ict|so web|so')
 				@role('service desk')
 					<td>
 						@if($request->stage->id == 3)
@@ -72,9 +80,10 @@
 				@role('operation sd')
 					<td>
 						@if($request->stage->id == 2)
-							<a class="btn btn-primary" href="{{ route('requests.approveshow', $request->id) }}">Approval</a>
+							{{-- <a class="btn btn-primary" href="{{ route('requests.approveshow', $request->id) }}">Approval</a> --}}
 							{{-- <!--<a class="btn btn-primary" href="{{ route('requests.editreject', $request->id) }}">Reject</a>--> --}}
-							<a class="btn btn-primary" href="{{ route('requests.eskalasiso', $request->id) }}">Eskalasi</a>
+							<a class="btn btn-primary" href="{{ route('requests.spsdapprove', $request->id) }}">Approval</a>
+							<a class="btn btn-primary" href="{{ route('requests.showeskalasi', $request->id) }}">Eskalasi</a>
 						@elseif($request->stage->id == 7)
 							<a  class="btn btn-success" disabled href="#">Success</a>
 						@endif
@@ -85,7 +94,7 @@
 						@if($request->stage->id == 7)
 							<a class="btn btn-primary" href="{{ route('requests.approveshow', $request->id) }}">Approval</a>
 							<!--<a class="btn btn-primary" href="{{ route('requests.editreject', $request->id) }}">Reject</a>-->
-							<a class="btn btn-primary" href="{{ route('requests.eskalasiso', $request->id) }}">Eskalasi</a>
+							{{-- <a class="btn btn-primary" href="{{ route('requests.eskalasiso', $request->id) }}">Eskalasi</a> --}}
 						@elseif($request->stage->id == 3)
 							<a  class="btn btn-success" disabled href="#">Success</a>
 						@elseif($request->stage->id == 5)
@@ -108,10 +117,12 @@
 					@endif
 				</td>
 				@endrole
+				@endrole
 				@role('employee')
 					<td>
 						@if($request->stage->id == 6) 
-							<a class="btn btn-primary" href="{{ route('requests.approveshow', $request->id) }}">Approval</a>
+							{{-- <a class="btn btn-primary" href="{{ route('requests.approveshow', $request->id) }}">Approval</a> --}}
+						<a class="btn btn-primary" href="{{ route('requests.employeeapprove', $request->id) }}">Setujui</a>
 						@endif
 					</td>
 				@endrole

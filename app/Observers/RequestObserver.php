@@ -5,11 +5,9 @@ namespace App\Observers;
 use App\ITRequest;
 use App\RequestApproval;
 use App\Status;
-use Illuminate\Support\Facades\Auth;
-use App\Notifications\RequestCreated;
-use App\Notifications\RequestBossApproved;
 use App\User;
 use App\Stage;
+use Illuminate\Support\Facades\Auth;
 
 class RequestObserver
 {
@@ -23,10 +21,11 @@ class RequestObserver
     {
         $ra = new RequestApproval();
         $ra->request_id = $request->id;
-        $ra->user_id =  Auth::user()->id;
+        $ra->user_id = Auth::user()->id;
         $ra->status_id = Status::waitingForApproval()->first()->id;
+        $ra->stage_id = Stage::waitingBossApproval()->first()->id;
         $ra->save();
-       
+
     }
 
     /**
@@ -37,7 +36,7 @@ class RequestObserver
      */
     public function updated(ITRequest $request)
     {
-       
+
     }
 
     /**

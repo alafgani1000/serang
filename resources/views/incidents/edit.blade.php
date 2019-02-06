@@ -18,14 +18,14 @@
                             <div class="col-md-6">
                                 <div class="btn-group mb-3" role="group">
                                     <button type="submit" class="btn btn-primary">
-                                        Save
+                                        Simpan
                                     </button>
                                 </div>
                             </div>
                         </div>
                         <div class="form-group">
                             <div class="col-md-12">
-                                <label for="description">Description</label>
+                                <label for="description">Deskripsi</label>
                                 <textarea  name="description" rows="8" class="form-control {{ $errors->has('description') ? ' is-invalid' : '' }}" autofocus>{{ $incident->description }}</textarea>
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $errors->first('description') }}</strong>
@@ -34,7 +34,7 @@
                         </div>
                         <div class="form-group">
                             <div class="col-md-12">
-                                <label for="impact">Impact</label>
+                                <label for="impact">Dampak</label>
                                 <textarea  name="impact" rows="8" class="form-control {{ $errors->has('impact') ? ' is-invalid' : '' }}" autofocus>{{ $incident->impact }}</textarea>
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $errors->first('impact') }}</strong>

@@ -12,7 +12,7 @@
                         </div>
                     @endif
                     <form method="POST" 
-                         @role('boss')
+                        @role('boss')
                             action="{{ route('requests.approvesave', $request->id) }}" 
                         @endrole
                         @role('so|so web')
@@ -40,10 +40,13 @@
                                         <option value="2">Tolak</option>
                                         @endrole
                                     </select>
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $errors->first('aksi') }}</strong>
+                                    </span>
                                 </div>
                                 <div class="btn-group mb-3" role="group">
-                                    <button type="submit" class="btn btn-primary" id="">
-                                        Setuju
+                                    <button type="submit" class="btn btn-primary" id="idbuttonapprove">
+                                        Simpan
                                     </button>
                                 </div>
                             </div>
@@ -52,7 +55,7 @@
                             <div class="col-md-12">
                             <label for="title">Judul</label>
                                 <input 
-                                @role('employee|service desk|operation sd|operation ict|manager beict|so web')
+                                @role('employee|service desk|operation sd|operation ict|so web')
                                     readonly
                                 @endrole
                                     
@@ -66,7 +69,7 @@
                             <div class="col-md-12">
                                 <label for="service_id">Layanan</label>
                                 <select 
-                                @role('employee|service desk|operation sd|operation ict|manager beict|so web')
+                                @role('employee|service desk|operation sd|operation ict|so web')
                                     readonly
                                 @endrole
                                 id="idservice" name="service_id" class="form-control {{ $errors->has('service_id') ? ' is-invalid' : '' }}">
@@ -88,7 +91,7 @@
                             <div class="col-md-12">
                                 <label for="categories">Kategori Layanan</label>
                                 <select 
-                                @role('employee|service desk|operation sd|operation ict|manager beict|so web')
+                                @role('employee|service desk|operation sd|operation ict|so web')
                                 readonly
                                 @endrole
                                 id="idcategories" name="categories" class="form-control {{ $errors->has('categories') ? ' is-invalid' : '' }}">
@@ -110,7 +113,7 @@
                             <div class="col-md-12">
                                 <label for="business_need">Kebutuhan Bisnis</label>
                                 <textarea 
-                                @role('employee|service desk|operation sd|operation ict|manager beict|so web')
+                                @role('employee|service desk|operation sd|operation ict|so web')
                                 readonly
                                 @endrole
                                 name="business_need" id="summernote" rows="6" class="form-control {{ $errors->has('business_need') ? ' is-invalid' : '' }}" autofocus>{{ $request->business_need }}</textarea>
@@ -123,7 +126,7 @@
                             <div class="col-md-12">
                                 <label for="business_benefit">Manfaat Bisnis</label>
                                 <textarea 
-                                @role('employee|service desk|operation sd|operation ict|manager beict|so web')
+                                @role('employee|service desk|operation sd|operation ict|so web')
                                 readonly
                                 @endrole
                                 name="business_benefit" rows="6" class="form-control {{ $errors->has('business_benefit') ? ' is-invalid' : '' }}" autofocus>{{ $request->business_benefit }}</textarea>
@@ -144,13 +147,42 @@
                         </div>
                         @endrole
                         <div class="form-group">
-                                <div class="col-md-12">
-                                    <label for="business_benefit">File Lampiran</label>
-                                </div>
+                            <div class="col-md-12">
+                                <label for="business_benefit">File Lampiran</label>
                             </div>
+                        </div>
                         <div class="form-group">
                             <div class="col-md-12">
                                 <a class="btn btn-primary" href="{{asset('storage/' . $request->attachment) }}" target="_blank"> <label for="customFile">Attachment</label></a>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <br/>
+                                <div class="custom-control custom-checkbox">
+                                    <input disabled checked type="checkbox" class="custom-control-input" id="nda" name="nda" value='1'>
+                                    <label class="custom-control-label" for="customCheck1">Kebijakan dan Aturan Penggunaan Layanan <span type="button" class="badge badge-danger" data-toggle="modal" data-target="#myModal">Show NDA</span></label>
+                                </div>
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $errors->first('nda') }}</strong>
+                                </span>
+                            </div>
+                        </div>
+                        <!-- Modal -->
+                        <div class="modal fade" id="myModal" role="dialog">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                        <h4 class="modal-title">Modal Header</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>This is a large modal.</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </form>

@@ -19,15 +19,6 @@
                         @csrf
                         @method('put')
                         <div class="form-group">
-                            <div class="col-md-6">
-                                <div class="btn-group mb-3" role="group">
-                                    <button type="submit" class="btn btn-primary">
-                                        Reject
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
                             <div class="col-md-12">
                             <label for="title">Title</label>
                                 <input readonly type="text" name="title" id="summernote" rows="2" class="form-control {{ $errors->has('title') ? ' is-invalid' : '' }}" autofocus value="{{$request->title}}">
@@ -73,13 +64,23 @@
                             </div>
                         </div>
                         <div class="form-group">
-                                <div class="col-md-12">
-                                    <label for="business_benefit">File attachment</label>
-                                </div>
+                            <div class="col-md-12">
+                                <label for="business_benefit">File attachment</label>
                             </div>
+                        </div>
                         <div class="form-group">
                             <div class="col-md-12">
                                 <a class="btn btn-primary" href="{{asset('storage/' . $request->attachment) }}" target="_blank"> <label for="customFile">Attachment</label></a>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-6">
+                                <br/>
+                                <div class="btn-group mb-3" role="group">
+                                    <button type="submit" class="btn btn-primary">
+                                        Eskalasi Ke SO
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </form>

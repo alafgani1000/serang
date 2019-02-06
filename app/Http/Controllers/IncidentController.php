@@ -123,12 +123,11 @@ class IncidentController extends Controller
     {
         $incidents = Incident::find($id);
         $incidents->detail = $request->input('detail');
-        $incidents->ticket = $request->input('ticket');
         $incidents->stage_id = Stage::waitingUserConf()->first()->id;
         $incidents->save();
         return redirect()
             ->route('incidents.index')
-            ->with('success','Detail berhasil dirubah');
+            ->with('success','Detail berhasil di input, Terimkasih');
     }
 
     public function detailshow(Incident $incident)
@@ -153,7 +152,7 @@ class IncidentController extends Controller
         $incidents->save();
         return redirect()
             ->route('incidents.index')
-            ->with('success','Incident direject');
+            ->with('success','Incident berhasil ditolak');
     }
 
     public function ticketshow(Incident $incident)
@@ -165,6 +164,7 @@ class IncidentController extends Controller
     {
         $incidents = Incident::find($id);
         $incidents->stage_id = Stage::ticketCreated()->first()->id;
+        $incidents->ticket = $request->input('ticket');
         $incidents->save();
         return redirect()
             ->route('incidents.index')

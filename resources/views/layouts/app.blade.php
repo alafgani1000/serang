@@ -61,9 +61,21 @@
 				$("#notif").html();
 
 				$("#idservice").change(function(){
-					$("#idcategories").html('<option>Pilih Kategori</option>' +
-											'<option value="1">Permintaan akses</option>' +
-											'<option value="2">Perubahan atau penambahan aplikasi</option>');
+					var id = $("#idservice").val();
+					if((id == 1) || (id == 2) || (id == 3))
+					{
+						$("#idcategories").html('<option>Pilih Kategori</option>' +
+												'<option value="2">Permintaan akses</option>' +
+												'<option value="1">Perubahan atau penambahan aplikasi</option>');
+					}
+					else
+					{
+						$("#idcategories").html('<option value="1">Permintaan akses</option>');
+					}
+				});
+
+				$("idbuttonapprove").click(function(){
+					
 				});
 			});
 		</script>
@@ -128,7 +140,7 @@
 						
 						<a href="index.html" class="navbar-brand">
 							<small>
-								MONITORING HELPDESK
+								IT ONLINE SERVICE
 							</small>
 						</a>
 					</div>
@@ -275,14 +287,14 @@
 							<li class="">
 								<a href="{{ route('requests.index') }}">
 									<i class="menu-icon fa fa-desktop"></i>
-									<span class="menu-text"> Request </span>
+									<span class="menu-text"> Permintaan Layanan </span>
 								</a>                    
 								<b class="arrow"></b>
 							</li>
 							<li class="">
 								<a href="{{ route('incidents.index') }}">
 									<i class="menu-icon fa fa-desktop"></i>
-									<span class="menu-text"> Incident </span>
+									<span class="menu-text"> Laporan Gangguan </span>
 								</a>                    
 								<b class="arrow"></b>
 							</li>
@@ -312,14 +324,14 @@
 							<li class="">
 								<a href="{{ route('requests.index') }}">
 									<i class="menu-icon fa fa-desktop"></i>
-									<span class="menu-text"> Request </span>
+									<span class="menu-text"> Permintaan Layanan </span>
 								</a>                    
 								<b class="arrow"></b>
 							</li>
 							<li class="">
 								<a href="{{ route('incidents.index') }}">
 									<i class="menu-icon fa fa-desktop"></i>
-									<span class="menu-text"> Incident </span>
+									<span class="menu-text"> Laporan Gangguan </span>
 								</a>                    
 								<b class="arrow"></b>
 							</li>
@@ -328,14 +340,14 @@
 								<li class="">
 									<a href="{{ route('requests.index') }}">
 										<i class="menu-icon fa fa-desktop"></i>
-										<span class="menu-text"> Request </span>
+										<span class="menu-text"> Permintaan Layanan </span>
 									</a>                    
 									<b class="arrow"></b>
 								</li>
 								<li class="">
 									<a href="{{ route('incidents.index') }}">
 										<i class="menu-icon fa fa-desktop"></i>
-										<span class="menu-text"> Incident </span>
+										<span class="menu-text"> Laporan Gangguan </span>
 									</a>                    
 									<b class="arrow"></b>
 								</li>

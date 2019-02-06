@@ -31,6 +31,9 @@ class StoreITRequestRequest extends FormRequest
             'attachment' => 'required|image',
             'attachment' => 'required',
             'category' => 'required',
+            'category' => 'required',
+            'nda' => 'required',
+            'category' => 'required',
         ];
     }
 }

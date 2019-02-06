@@ -12,6 +12,7 @@ use App\RequestApproval;
 use App\Http\Requests;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\StoreITRequestRequest;
+use App\Http\Requests\ApprovrsaveITRequestRequest;
 use Illuminate\Support\Facades\Storage;
 use App\Notifications\RequestCreated;
 use Spatie\Permission\Models\Role;
@@ -57,6 +58,8 @@ class RequestController extends Controller
         $r->business_benefit = $request->input('business_benefit');
         $r->stage_id = Stage::waitingBossApproval()->first()->id;
         $r->category_id = $request->input('category');
+        $r->keterangan = $request->input('keterangan');
+        $r->nda = $request->input('nda');
         $r->user_id = Auth::user()->id;
         $r->save();
         return redirect()
@@ -139,6 +142,7 @@ class RequestController extends Controller
                 $request->title = $r->input('title');
                 $request->business_need = $r->input('business_need');
                 $request->business_benefit = $r->input('business_benefit');
+                $request->category_id = $r->input('categories');
                 $request->save();
             }
             elseif($r->input('categories') == 1)
@@ -148,6 +152,7 @@ class RequestController extends Controller
                 $request->title = $r->input('title');
                 $request->business_need = $r->input('business_need');
                 $request->business_benefit = $r->input('business_benefit');
+                $request->category_id = $r->input('categories');
                 $request->save();
             }
             // save request approvals
@@ -155,12 +160,16 @@ class RequestController extends Controller
             $ra->request_id = $request->id;
             $ra->user_id = Auth::user()->id;
             $ra->status_id = Status::approved()->first()->id;
+            $ra->stage_id = Stage::waitingForOperationDesk()->first()->id;
             $ra->save();
 
             $notification = Auth::user()->notifications->filter(function($item, $key) use($request){
                 return $item->data['id'] == $request->id and $item->data['stage_id'] == 1;
             })->first();
-            $notification->markAsRead();
+            if(isset($notification))
+            {
+                $notification->markAsRead();
+            }
 
             // redirect
             return redirect()
@@ -169,19 +178,23 @@ class RequestController extends Controller
         }
         elseif($r->input('aksi') == "2")
         {
-            $request->stage_id = Stage::requestDenied()->first()->id;
+            $request->stage_id = Stage::requestRejected()->first()->id;
             $request->save();
     
             $ra = new RequestApproval();
             $ra->request_id = $request->id;
             $ra->user_id = Auth::user()->id;
             $ra->status_id = Status::rejected()->first()->id;
+            $ra->stage_id = Stage::requestRejected()->first()->id;
             $ra->save();
 
             $notification = Auth::user()->notifications->filter(function($item, $key) use($request){
-                return $item->data['id'] == $request->id and $item->data['stage_id'] == 3;
+                return $item->data['id'] == $request->id and $item->data['stage_id'] == 1;
             })->first();
-            $notification->markAsRead();
+            if(isset($notification))
+            {
+                $notification->markAsRead();
+            }
     
             return redirect()
                 ->route('requests.index')
@@ -194,7 +207,9 @@ class RequestController extends Controller
         if($r->input('aksi') == "1")
         {
             // update stage
-            $request->stage_id = Stage::waitingForServiceDesk()->first()->id;
+            // $request->stage_id = Stage::waitingForServiceDesk()->first()->id;
+            $request->stage_id = Stage::waitingForOperationIct()->first()->id;
+            $request->reason = $r->input('reason');
             $request->save();
             // save request approvals
             $ra = new RequestApproval();
@@ -239,19 +254,24 @@ class RequestController extends Controller
     public function spsdapprove(Request $r, ITRequest $request)
     {
         // update stage
-        $request->stage_id = Stage::waitingForOperationIct()->first()->id;
+        // $request->stage_id = Stage::waitingForOperationIct()->first()->id;
+        $request->stage_id = Stage::waitingForServiceDesk()->first()->id;
         $request->save();
         // save request approvals
         $ra = new RequestApproval();
         $ra->request_id = $request->id;
         $ra->user_id = Auth::user()->id;
         $ra->status_id = Status::approved()->first()->id;
+        $ra->stage_id = Stage::waitingForServiceDesk()->first()->id;
         $ra->save();
 
         $notification = Auth::user()->notifications->filter(function($item, $key) use($request){
             return $item->data['id'] == $request->id and $item->data['stage_id'] == 2;
         })->first();
-        $notification->markAsRead();
+        if(isset($notification))
+        {
+            $notification->markAsRead();
+        }
 
         return redirect()
             ->route('requests.index')
@@ -264,6 +284,13 @@ class RequestController extends Controller
         $services = Service::all();
         $categories = Category::all();
         return view('requestapprovals.edit', compact('request','services','categories'));
+    }
+
+    public function escalationshow(ITRequest $request)
+    {
+        $services = Service::all();
+        $categories = Category::all();
+        return view('requestapprovals.escalation', compact('request','services','categories'));
     }
 
     public function editdetail(ITRequest $request)
@@ -283,46 +310,33 @@ class RequestController extends Controller
     public function showvalidasi(ITRequest $request)
     {
         $services = Service::all();
-        return view('requestapprovals.editvalidation', compact('request','services'));
+        return view('requestapprovals.recomendation', compact('request','services'));
     }
 
     public function updatedetail(Request $r, ITRequest $request)
     {
-        $request->stage_id = Stage::waitingUserConf()->first()->id;
-        $request->detail = $r->input('detail');
+        $request->stage_id  = Stage::waitingUserConf()->first()->id;
+        $request->detail    = $r->input('detail');
         $request->save();
 
         $ra = new RequestApproval();
         $ra->request_id = $request->id;
-        $ra->user_id = Auth::user()->id;
-        $ra->status_id = Status::approved()->first()->id;
+        $ra->user_id    = Auth::user()->id;
+        $ra->status_id  = Status::approved()->first()->id;
+        $ra->stage_id   = Stage::waitingUserConf()->first()->id;
         $ra->save();
 
         $notification = Auth::user()->notifications->filter(function($item, $key) use($request){
             return $item->data['id'] == $request->id and $item->data['stage_id'] == 4;
         })->first();
-        $notification->markAsRead();
+        if(isset($notification))
+        {
+            $notification->markAsRead();
+        }
 
         return redirect()
             ->route('requests.index')
             ->with('success','Detail layanan berhasil di input');
-    }
-
-    public function managervalidation(Request $r, ITRequest $request)
-    {
-        $request->stage_id = Stage::requestRejected()->first()->id;
-        $request->detail = $r->input('detail');
-        $request->save();
-
-        $ra = new RequestApproval();
-        $ra->request_id = $request->id;
-        $ra->user_id = Auth::user()->id;
-        $ra->status_id = Status::rejected()->first()->id;
-        $ra->save();
-
-        return redirect()
-            ->route('requests.index')
-            ->with('success','Layanan berhasil di reject');
     }
 
     public function updateticket(Request $r, ITRequest $request)
@@ -333,14 +347,18 @@ class RequestController extends Controller
 
         $ra = new RequestApproval();
         $ra->request_id = $request->id;
-        $ra->user_id = Auth::user()->id;
-        $ra->status_id = Status::approved()->first()->id;
+        $ra->user_id    = Auth::user()->id;
+        $ra->status_id  = Status::approved()->first()->id;
+        $ra->stage_id   = Stage::ticketCreated()->first()->id;
         $ra->save();
 
         $notification = Auth::user()->notifications->filter(function($item, $key) use($request){
             return $item->data['id'] == $request->id and $item->data['stage_id'] == 3;
         })->first();
-        $notification->markAsRead();
+        if(isset($notification))
+        {
+            $notification->markAsRead();
+        }
 
         return redirect()
             ->route('requests.index')
@@ -395,16 +413,20 @@ class RequestController extends Controller
         $ra->request_id = $request->id;
         $ra->user_id = Auth::user()->id;
         $ra->status_id = Status::approved()->first()->id;
+        $ra->stage_id = Stage::closed()->first()->id;
         $ra->save();
 
         $notification = Auth::user()->notifications->filter(function($item, $key) use($request){
             return $item->data['id'] == $request->id and $item->data['stage_id'] == 6;
         })->first();
-        $notification->markAsRead();
+        if(isset($notification))
+        {
+            $notification->markAsRead();
+        }
 
         return redirect()
             ->route('requests.index')
-            ->with('success','Request ditolak');
+            ->with('success','Request disetujui oleh user');
     }
 
     public function spictapprove(Request $r, ITRequest $request)
@@ -437,12 +459,16 @@ class RequestController extends Controller
         $ra->request_id = $request->id;
         $ra->user_id = Auth::user()->id;
         $ra->status_id = Status::approved()->first()->id;
+        $ra->stage_id = Stage::waitingForSoApproval()->first()->id;
         $ra->save();
 
         $notification = Auth::user()->notifications->filter(function($item, $key) use($request){
             return $item->data['id'] == ( $request->id and $item->data['stage_id'] == 2 or $request->id and $item->data['stage_id'] == 7);
         })->first();
-        $notification->markAsRead();
+        if(isset($Stage::waitingForSoApproval()->first()->id))
+        {
+            $notification->markAsRead();
+        }
 
         return redirect()
             ->route('requests.index')

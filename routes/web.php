@@ -33,14 +33,14 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/requests/{request}/edit/reject', 'RequestController@editreject')->name('requests.editreject');
     Route::put('/requests/{request}/so/update/reject', 'RequestController@soreject')->name('requests.soreject');
     Route::put('/requests/{request}/boss/update/reject', 'RequestController@bossreject')->name('requests.bossreject');
-    Route::put('/requests/{request}/employee/approve', 'RequestController@employeeapprove')->name('requests.employeeapprove');
-    Route::put('/requests/{request}/spsd/approve', 'RequestController@spictapprove')->name('requests.spictapprove');
-    Route::put('/requests/{request}/spict/approve', 'RequestController@spsdapprove')->name('requests.spsdapprove');
+    Route::get('/requests/{request}/employee/approve', 'RequestController@employeeapprove')->name('requests.employeeapprove');
+    Route::put('/requests/{request}/spict/approve', 'RequestController@spictapprove')->name('requests.spictapprove');
+    Route::get('/requests/{request}/spsd/approve', 'RequestController@spsdapprove')->name('requests.spsdapprove');
     Route::get('/requests/{request}/esklasi/so', 'RequestController@eskalasiso')->name('requests.eskalasiso');
     Route::put('/requests/{request}/update/ticket', 'RequestController@updateticket')->name('requests.updateticket');
     Route::get('/requests/{request}/edit/ticket', 'RequestController@editticket')->name('requests.editticket');
-    Route::put('/requests/{request}/validasi/rejected', 'RequestController@managervalidation')->name('requests.managervalidation');
     Route::get('/requests/{request}/validasi/show', 'RequestController@showvalidasi')->name('requests.showvalidasi');
+    Route::get('/requests/{request}/eskalasi/show', 'RequestController@escalationshow')->name('requests.showeskalasi');
     Route::get('/incident/{incident}/show', 'IncidentController@show')->name('incidents.show');
     Route::get('', 'HomeController@index')->name('home');
 });
