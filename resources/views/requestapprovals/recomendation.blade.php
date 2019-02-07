@@ -2,7 +2,7 @@
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-10">
+        <div class="col-md-8">
             <div class="card">
                 <div class="card-header">Request</div>
                 <div class="card-body">
@@ -11,7 +11,7 @@
                             {{ session('success') }}
                         </div>
                     @endif
-                    <form method="POST" action="{{ route('requests.updatedetail', $request->id) }}" enctype="multipart/form-data">
+                    <form method="POST" action="{{ route('requests.updaterecomendation', $request->id) }}" enctype="multipart/form-data">
                         @csrf
                         @method('put')
                         <div class="form-group">
@@ -91,24 +91,6 @@
                             </div>
                         </div>
                         <div class="form-group">
-                                <div class="col-md-12">
-                                    <label for="ticket">Tiket Kaseya</label>
-                                    <textarea readonly name="ticket" rows="1" class="form-control {{ $errors->has('ticket') ? ' is-invalid' : '' }}" autofocus>{{ $request->ticket }}</textarea>
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $errors->first('ticket') }}</strong>
-                                    </span>
-                                </div>
-                            </div>
-                        <div class="form-group">
-                            <div class="col-md-12">
-                                <label for="detail">Detail Layanan</label>
-                                <textarea name="detail" rows="6" class="form-control {{ $errors->has('detail') ? ' is-invalid' : '' }}" autofocus>{{ $request->detail }}</textarea>
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $errors->first('detail') }}</strong>
-                                </span>
-                            </div>
-                        </div>
-                        <div class="form-group">
                             <div class="col-md-12">
                                 <label for="business_benefit">File Lampiran</label>
                             </div>
@@ -120,13 +102,19 @@
                         </div>
                         <div class="form-group">
                             <div class="col-md-12">
-                                <br/>
-                                <div class="custom-control custom-checkbox">
-                                    <input disabled checked type="checkbox" class="custom-control-input" id="nda" name="nda" value='1'>
-                                    <label class="custom-control-label" for="customCheck1">Kebijakan dan Aturan Penggunaan Layanan <span type="button" class="badge badge-danger" data-toggle="modal" data-target="#myModal">Show NDA</span></label>
-                                </div>
+                                <label for="reason">Alasan</label>
+                                <textarea  name="reason" rows="4" class="form-control {{ $errors->has('business_benefit') ? ' is-invalid' : '' }}" autofocus>{{ old('reason') }}</textarea>
                                 <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $errors->first('nda') }}</strong>
+                                    <strong>{{ $errors->first('reason') }}</strong>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <label for="customFile">Lampiran</label>
+                                <input type="file" class="form-control {{ $errors->has('attachment') ? 'is-invalid' : '' }}" id="customFile" name="attachment">
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $errors->first('attachment') }}</strong>
                                 </span>
                             </div>
                         </div>

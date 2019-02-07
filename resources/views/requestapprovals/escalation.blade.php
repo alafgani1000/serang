@@ -2,7 +2,7 @@
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-10">
+        <div class="col-md-8">
             <div class="card">
                 <div class="card-header">Request</div>
                 <div class="card-body">
@@ -71,6 +71,20 @@
                         <div class="form-group">
                             <div class="col-md-12">
                                 <a class="btn btn-primary" href="{{asset('storage/' . $request->attachment) }}" target="_blank"> <label for="customFile">Attachment</label></a>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <label for="so">Service Owner</label>
+                                <select name="so" class="form-control {{ $errors->has('so') ? ' is-invalid' : '' }}">
+                                        <option>Pilih SO</option>
+                                    @foreach ($roles as $role)
+                                        <option value={{$role->id}}>{{$role->name}}</option>
+                                    @endforeach
+                                </select>
+                                <span class="invalid-feedback" role="alert">
+                                <strong>{{ $errors->first('so') }}</strong>
+                                </span>
                             </div>
                         </div>
                         <div class="form-group">

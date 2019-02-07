@@ -112,11 +112,10 @@ class RequestApprovalObserver
             $user = User::find($requestApproval->request->user_id);
             $user->notify(new RequestCreated($requestApproval));
         }
-        else if($requestApproval->request->stage_id == 10)
+        // stage request eskalasi so
+        else if($requestApproval->request->stage_id == Stage::waitingForSoApproval()->first()->id)
         {
-            $sorole = Service::find($requestApproval->request->service_id);
-           
-            $role = Role::find($sorole->role_id);
+            $role = Role::find($requestApproval->request->so);
             $user = $role->users;
             $user->each(function ($item, $key) use ($requestApproval) {
                 $item->notify(new RequestCreated($requestApproval));

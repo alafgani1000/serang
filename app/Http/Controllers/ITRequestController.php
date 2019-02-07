@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Notifications\RequestCreated;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use App\RequestReasonfile;
 
 class RequestController extends Controller
 {
@@ -290,7 +291,16 @@ class RequestController extends Controller
     {
         $services = Service::all();
         $categories = Category::all();
-        return view('requestapprovals.escalation', compact('request','services','categories'));
+        $roles = Role::where('name','like','%so%')->get();
+        return view('requestapprovals.escalation', compact('request','services','categories','roles'));
+    }
+
+    public function editrecomedation(ITRequest $request)
+    {
+        $services = Service::all();
+        $categories = Category::all();
+        $roles = Role::where('name','like','%so%')->get();
+        return view('requestapprovals.recomendation', compact('request','services','categories','roles'));
     }
 
     public function editdetail(ITRequest $request)
@@ -311,6 +321,12 @@ class RequestController extends Controller
     {
         $services = Service::all();
         return view('requestapprovals.recomendation', compact('request','services'));
+    }
+
+    public function editreject(ITRequest $request)
+    {
+        $services = Service::all();
+        return view('requestapprovals.editreject', compact('request','services'));
     }
 
     public function updatedetail(Request $r, ITRequest $request)
@@ -364,13 +380,6 @@ class RequestController extends Controller
             ->route('requests.index')
             ->with('success','Nomor ticket kaseya berhasil di input');
     }
-
-    public function editreject(ITRequest $request)
-    {
-        $services = Service::all();
-        return view('requestapprovals.editreject', compact('request','services'));
-    }
-    
 
     public function soreject(ITRequest $request)
     {
@@ -452,20 +461,29 @@ class RequestController extends Controller
 
     public function eskalasiso(Request $r, ITRequest $request)
     {
+        if($r->has('so'))
+        {
+            $roleso = $r->input('so');
+        }
+        else
+        {
+            $roleso = Service::find($request->service_id)->role_id;
+        }
         $request->stage_id = Stage::waitingForSoApproval()->first()->id;
+        $request->so = $roleso;
         $request->save();
-
+        // save  request approval
         $ra = new RequestApproval();
         $ra->request_id = $request->id;
         $ra->user_id = Auth::user()->id;
         $ra->status_id = Status::approved()->first()->id;
         $ra->stage_id = Stage::waitingForSoApproval()->first()->id;
         $ra->save();
-
+        // read notification
         $notification = Auth::user()->notifications->filter(function($item, $key) use($request){
             return $item->data['id'] == ( $request->id and $item->data['stage_id'] == 2 or $request->id and $item->data['stage_id'] == 7);
         })->first();
-        if(isset($Stage::waitingForSoApproval()->first()->id))
+        if(isset($notification))
         {
             $notification->markAsRead();
         }

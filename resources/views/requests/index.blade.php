@@ -83,7 +83,11 @@
 							{{-- <a class="btn btn-primary" href="{{ route('requests.approveshow', $request->id) }}">Approval</a> --}}
 							{{-- <!--<a class="btn btn-primary" href="{{ route('requests.editreject', $request->id) }}">Reject</a>--> --}}
 							<a class="btn btn-primary" href="{{ route('requests.spsdapprove', $request->id) }}">Approval</a>
-							<a class="btn btn-primary" href="{{ route('requests.showeskalasi', $request->id) }}">Eskalasi</a>
+							@if($request->service->id == 2 or $request->service->id == 1)
+								<a class="btn btn-primary" href="{{ route('requests.showeskalasi', $request->id) }}">Eskalasi</a>
+							@else 
+								<a class="btn btn-primary" href="{{ route('requests.eskalasiso', $request->id) }}">Eskalasi</a>
+							@endif
 						@elseif($request->stage->id == 7)
 							<a  class="btn btn-success" disabled href="#">Success</a>
 						@endif
@@ -112,7 +116,7 @@
 					@elseif($request->stage->id == 5)
 						<a class="btn btn-primary" href="{{ route('requests.approveshow', $request->id) }}">Approval</a>
 					@elseif($request->stage->id == 10)
-						<a class="btn btn-primary" href="{{ route('requests.approveshow', $request->id) }}">Approval</a>
+						<a class="btn btn-primary" href="{{ route('requests.editrecomedation', $request->id) }}">Approval</a>
 						{{-- <a class="btn btn-primary" href="{{ route('requests.editreject', $request->id) }}">Reject</a> --}}
 					@endif
 				</td>

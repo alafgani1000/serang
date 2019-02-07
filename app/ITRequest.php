@@ -28,8 +28,13 @@ class ITRequest extends Model
         return $this->hasMany('App\RequestApproval', 'request_id');
     }
 
+    public function requestReasonfiles()
+    {
+        return $this->hasMany('App\RequestReasonfile', 'request_id');
+    }
+
     public function category()
     {
-        return $this->belongsTo('App\Category','category_id');
+        return $this->belongsTo('App\Category', 'category_id');
     }
 }
