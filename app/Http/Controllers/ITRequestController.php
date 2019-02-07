@@ -480,13 +480,17 @@ class RequestController extends Controller
         $ra = new RequestApproval();
         $ra->request_id = $request->id;
         $ra->user_id = Auth::user()->id;
+        $ra->stage_id = Stage::waitingForServiceDesk()->first()->id;
         $ra->status_id = Status::approved()->first()->id;
         $ra->save();
 
         $notification = Auth::user()->notifications->filter(function($item, $key) use($request){
             return $item->data['id'] == $request->id and $item->data['stage_id'] == 7;
         })->first();
-        $notification->markAsRead();
+        if(isset($notification))
+        {
+            $notification->markAsRead();
+        }
 
         return redirect()
             ->route('requests.index')
