@@ -329,6 +329,40 @@ class RequestController extends Controller
         return view('requestapprovals.editreject', compact('request','services'));
     }
 
+    public function updaterecomendation(Request $r, ITRequest $request)
+    {
+        $request->stage_id  = Stage::waitingForOperationIct()->first()->id;
+        $request->reason    = $r->input('reason');
+        $request->save();
+
+        foreach( $r->file('attachment') as $files)
+        {
+            $rfiles = new RequestReasonfile();
+            $rfiles->attachment = $files->store('attachments');
+            $rfiles->request_id = $request->id;
+            $rfiles->save();
+        }
+
+        $ra = new RequestApproval();
+        $ra->request_id = $request->id;
+        $ra->user_id    = Auth::user()->id;
+        $ra->status_id  = Status::approved()->first()->id;
+        $ra->stage_id   = Stage::waitingForOperationIct()->first()->id;
+        $ra->save();
+
+        $notification = Auth::user()->notifications->filter(function($item, $key) use($request){
+            return $item->data['id'] == $request->id and $item->data['stage_id'] == 10;
+        })->first();
+        if(isset($notification))
+        {
+            $notification->markAsRead();
+        }
+
+        return redirect()
+            ->route('requests.index')
+            ->with('success','rekomendasi berhasil dikirim');
+    }
+
     public function updatedetail(Request $r, ITRequest $request)
     {
         $request->stage_id  = Stage::waitingUserConf()->first()->id;

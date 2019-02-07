@@ -42,7 +42,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/requests/{request}/validasi/show', 'RequestController@showvalidasi')->name('requests.showvalidasi');
     Route::get('/requests/{request}/eskalasi/show', 'RequestController@escalationshow')->name('requests.showeskalasi');
     Route::get('/requests/{request}/form/rekomendasi', 'RequestController@editrecomedation')->name('requests.editrecomedation');
-    Route::get('/requests/{request}/update/rekomendasi', 'RequestController@updaterecomendation')->name('requests.updaterecomendation');
+    Route::put('/requests/{request}/update/rekomendasi', 'RequestController@updaterecomendation')->name('requests.updaterecomendation');
     Route::get('/incident/{incident}/show', 'IncidentController@show')->name('incidents.show');
     Route::get('', 'HomeController@index')->name('home');
 });

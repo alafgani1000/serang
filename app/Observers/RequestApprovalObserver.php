@@ -52,7 +52,8 @@ class RequestApprovalObserver
             });
 
         }
-        else if($requestApproval->request->stage_id == 7)
+        // stage operation ict
+        else if($requestApproval->request->stage_id == Stage::waitingForOperationIct()->first()->id)
         {
             $role = Role::findByName('operation ict');
             $collection = $role->users;

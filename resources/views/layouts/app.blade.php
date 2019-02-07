@@ -74,8 +74,13 @@
 					}
 				});
 
-				$("idbuttonapprove").click(function(){
-					
+				$(".tambah").click(function(){ 
+					var html = $(".clone").html();
+					$(".increment").after(html);
+				});
+
+				$("body").on("click",".kurang",function(){ 
+					$(this).parents(".control-group").remove();
 				});
 			});
 		</script>
