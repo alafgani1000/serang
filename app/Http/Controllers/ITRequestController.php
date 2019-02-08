@@ -18,6 +18,7 @@ use App\Notifications\RequestCreated;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use App\RequestReasonfile;
+use App\RequestAttachment;
 
 class RequestController extends Controller
 {
@@ -28,7 +29,7 @@ class RequestController extends Controller
      */
     public function index()
     {
-        $paginated = ITRequest::paginate(10);
+        $paginated = ITRequest::paginate();
         return view('requests.index',compact('paginated'));
     }
 
@@ -52,17 +53,24 @@ class RequestController extends Controller
     public function store(StoreITRequestRequest $request)
     {
         $r = new ITRequest();
-        $r->attachment = $request->file('attachment')->store('attachments');
-        $r->service_id = $request->input('service_id');
-        $r->title = $request->input('title');
-        $r->business_need = $request->input('business_need');
-        $r->business_benefit = $request->input('business_benefit');
-        $r->stage_id = Stage::waitingBossApproval()->first()->id;
-        $r->category_id = $request->input('category');
-        $r->keterangan = $request->input('keterangan');
-        $r->nda = $request->input('nda');
-        $r->user_id = Auth::user()->id;
+        //$r->attachment          = $request->file('attachment')->store('attachments');
+        $r->service_id          = $request->input('service_id');
+        $r->title               = $request->input('title');
+        $r->business_need       = $request->input('business_need');
+        $r->business_benefit    = $request->input('business_benefit');
+        $r->stage_id            = Stage::waitingBossApproval()->first()->id;
+        $r->category_id         = $request->input('category');
+        $r->keterangan          = $request->input('keterangan');
+        $r->nda                 = $request->input('nda');
+        $r->user_id             = Auth::user()->id;
         $r->save();
+
+        foreach($request->file('attachment') as $files)
+        {
+            $item = $files->store('attachments');
+            $r->requestAttacments()->save(new RequestAttachment(['attachment' => $item]));
+        }
+
         return redirect()
             ->route('requests.index')
             ->with('success','Request Berhasil dikirim');
@@ -474,27 +482,54 @@ class RequestController extends Controller
 
     public function spictapprove(Request $r, ITRequest $request)
     {
-        $request->stage_id = Stage::waitingForServiceDesk()->first()->id;
-        $request->save();
-
-        $ra = new RequestApproval();
-        $ra->request_id = $request->id;
-        $ra->user_id = Auth::user()->id;
-        $ra->stage_id = Stage::waitingForServiceDesk()->first()->id;
-        $ra->status_id = Status::approved()->first()->id;
-        $ra->save();
-
-        $notification = Auth::user()->notifications->filter(function($item, $key) use($request){
-            return $item->data['id'] == $request->id and $item->data['stage_id'] == 7;
-        })->first();
-        if(isset($notification))
+        if($r->input('aksi') == "1")
         {
-            $notification->markAsRead();
-        }
+            $request->stage_id = Stage::waitingForServiceDesk()->first()->id;
+            $request->save();
 
-        return redirect()
-            ->route('requests.index')
-            ->with('success','Request berhasil di setujui');
+            $ra = new RequestApproval();
+            $ra->request_id = $request->id;
+            $ra->user_id = Auth::user()->id;
+            $ra->stage_id = Stage::waitingForServiceDesk()->first()->id;
+            $ra->status_id = Status::approved()->first()->id;
+            $ra->save();
+
+            $notification = Auth::user()->notifications->filter(function($item, $key) use($request){
+                return $item->data['id'] == $request->id and $item->data['stage_id'] == 7;
+            })->first();
+            if(isset($notification))
+            {
+                $notification->markAsRead();
+            }
+
+            return redirect()
+                ->route('requests.index')
+                ->with('success','Request berhasil di setujui');
+        }
+        else
+        {
+            $request->stage_id = Stage::requestRejected()->first()->id;
+            $request->save();
+
+            $ra = new RequestApproval();
+            $ra->request_id = $request->id;
+            $ra->user_id = Auth::user()->id;
+            $ra->stage_id = Stage::requestRejected()->first()->id;
+            $ra->status_id = Status::rejected()->first()->id;
+            $ra->save();
+
+            $notification = Auth::user()->notifications->filter(function($item, $key) use($request){
+                return $item->data['id'] == $request->id and $item->data['stage_id'] == 7;
+            })->first();
+            if(isset($notification))
+            {
+                $notification->markAsRead();
+            }
+
+            return redirect()
+                ->route('requests.index')
+                ->with('success','Request berhasil ditolak');
+        }
     }
 
     public function eskalasiso(Request $r, ITRequest $request)

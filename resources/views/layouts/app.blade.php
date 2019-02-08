@@ -82,6 +82,15 @@
 				$("body").on("click",".kurang",function(){ 
 					$(this).parents(".control-group").remove();
 				});
+
+				$(".tambah1").click(function(){ 
+					var html = $(".clone").html();
+					$(".increment").after(html);
+				});
+
+				$("body").on("click",".kurang1",function(){ 
+					$(this).parents(".control-group").remove();
+				});
 			});
 		</script>
 		<!-------------------------------akhir dari color box------------------------------------>

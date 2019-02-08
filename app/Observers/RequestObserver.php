@@ -7,7 +7,11 @@ use App\RequestApproval;
 use App\Status;
 use App\User;
 use App\Stage;
+use App\RequestAttachment;
+use App\Http\Requests;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use illuminate\support\facades\Storage;
 
 class RequestObserver
 {
@@ -25,7 +29,6 @@ class RequestObserver
         $ra->status_id = Status::waitingForApproval()->first()->id;
         $ra->stage_id = Stage::waitingBossApproval()->first()->id;
         $ra->save();
-
     }
 
     /**

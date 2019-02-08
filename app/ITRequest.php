@@ -33,6 +33,11 @@ class ITRequest extends Model
         return $this->hasMany('App\RequestReasonfile', 'request_id');
     }
 
+    public function requestAttacments()
+    {
+        return $this->hasMany('App\RequestAttachment', 'request_id');
+    }
+
     public function category()
     {
         return $this->belongsTo('App\Category', 'category_id');

@@ -85,7 +85,7 @@
                                 </span>
                             </div>
                         </div>
-                        <div class="form-group">
+                        {{-- <div class="form-group">
                             <div class="col-md-12">
                                 <label for="customFile">Lampiran</label>
                                 <input type="file" class="form-control {{ $errors->has('attachment') ? 'is-invalid' : '' }}" id="customFile" name="attachment">
@@ -93,7 +93,35 @@
                                     <strong>{{ $errors->first('attachment') }}</strong>
                                 </span>
                             </div>
+                        </div> --}}
+
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <label for="reason">Lampiran</label>
+                                <div class="input-group control-group increment">
+                                    <div class="custom-file">
+                                        <input class="custom-file-input" type="file" name="attachment[]" class="form-control">
+                                    </div>
+                                    <div class="input-group-btn"> 
+                                        <button class="btn btn-success tambah1" type="button"><i class="glyphicon glyphicon-plus"></i></button>
+                                    </div>
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $errors->first('attachment') }}</strong>
+                                    </span>
+                                </div>
+                                <div class="clone hide">
+                                        <div class="control-group input-group" style="margin-top:10px">
+                                            <div class="custom-file">
+                                                <input class="custom-file-input" type="file" name="attachment[]" class="form-control">
+                                            </div>
+                                            <div class="input-group-btn"> 
+                                                <button class="btn btn-danger kurang1" type="button"><i class="glyphicon glyphicon-remove"></i></button>
+                                            </div>
+                                        </div>
+                                </div>
+                            </div>
                         </div>
+
                         <div class="form-group">
                         </div>
                         <div class="form-group">

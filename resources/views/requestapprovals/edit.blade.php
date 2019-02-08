@@ -2,7 +2,7 @@
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-10">
+        <div class="col-md-8">
             <div class="card">
                 <div class="card-header">Request</div>
                 <div class="card-body">
@@ -36,7 +36,7 @@
                                     <select id="aksi" name="aksi" class="form-control {{ $errors->has('aksi') ? ' is-invalid' : '' }}">
                                         <option>Pilih aksi</option>
                                         <option value="1">Setujui</option>
-                                        @role('boss|so|so web')
+                                        @role('boss|so|so web|operation ict')
                                         <option value="2">Tolak</option>
                                         @endrole
                                     </select>
